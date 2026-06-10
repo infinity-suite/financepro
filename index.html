@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>FinanzApp Pro</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+            font-size: 1rem;
+        }
+
+        input, select, textarea {
+            -webkit-user-select: text;
+            user-select: text;
+            font-family: inherit;
+            font-size: inherit;
+            color: inherit;
+            background: transparent;
+            border: none;
+            outline: none;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        body {
+            --bg-main: #ffffff;
+            --bg-card: #f2f2f7;
+            --text-main: #000000;
+            --text-muted: #8e8e93;
+            --accent: #007aff;
+            --border: #e5e5ea;
+            --danger: #ff3b30;
+            --success: #34c759;
+            --warn: #ff9500;
+
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            display: block;
+        }
+
+        .app-container {
+            display: block;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding-top: max(20px, env(safe-area-inset-top));
+            padding-bottom: max(80px, env(safe-area-inset-bottom)); /* Platz für FAB */
+            padding-left: max(16px, env(safe-area-inset-left));
+            padding-right: max(16px, env(safe-area-inset-right));
+            overflow-y: auto;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        .app-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        body.theme-blue { --accent: #007aff; }
+        body.theme-green { --accent: #34c759; }
+        body.theme-indigo { --accent: #5856d6; }
+        body.theme-orange { --accent: #ff9500; }
+        body.theme-pink { --accent: #ff2d55; }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                --bg-main: #1c1c1e;
+                --bg-card: #2c2c2e;
+                --text-main: #ffffff;
+                --text-muted: #aeaeae;
+                --border: #38383a;
+            }
+        }
+
+        .header {
+            display: block;
+            width: 100%;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 12px;
+        }
+        .header-row {
+            display: block;
+            width: 100%;
+            clear: both;
+            margin-bottom: 8px;
+        }
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            float: left;
+        }
+        .header-menu-btn {
+            float: right;
+            background: var(--bg-card);
+            padding: 6px 14px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--accent);
+        }
+        .clear-float {
+            clear: both;
+        }
+
+        .month-selector {
+            display: block;
+            text-align: center;
+            margin: 12px 0;
+            background: var(--bg-card);
+            border-radius: 14px;
+            padding: 8px;
+        }
+        .month-btn {
+            display: inline-block;
+            width: 25%;
+            font-weight: bold;
+            color: var(--accent);
+            cursor: pointer;
+            text-align: center;
+        }
+        .month-display {
+            display: inline-block;
+            width: 48%;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .view-section {
+            display: block;
+            margin-bottom: 24px;
+        }
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-main);
+        }
+        .card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .row-item {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+        .row-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .lbl {
+            display: inline-block;
+            width: 40%;
+            color: var(--text-muted);
+            vertical-align: middle;
+        }
+        .val {
+            display: inline-block;
+            width: 58%;
+            text-align: right;
+            vertical-align: middle;
+        }
+        .val input, .val select {
+            width: 100%;
+            text-align: right;
+            background: rgba(0,0,0,0.03);
+            border-radius: 6px;
+            padding: 4px 8px;
+        }
+        @media (prefers-color-scheme: dark) {
+            .val input, .val select { background: rgba(255,255,255,0.05); }
+        }
+
+        .btn-action {
+            display: block;
+            width: 100%;
+            background: var(--accent);
+            color: white;
+            text-align: center;
+            padding: 12px;
+            border-radius: 14px;
+            font-weight: 600;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+        .btn-danger {
+            background: var(--danger);
+        }
+
+        .progress-container {
+            width: 100%;
+            background: var(--border);
+            border-radius: 8px;
+            height: 12px;
+            margin-top: 8px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%;
+            background: var(--success);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .progress-bar.over {
+            background: var(--danger);
+        }
+
+        .overlay-menu {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-main);
+            z-index: 9999;
+            padding: max(20px, env(safe-area-inset-top)) 16px;
+            overflow-y: auto;
+        }
+        .overlay-menu.active {
+            display: block;
+        }
+
+        .theme-dot {
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            margin: 6px;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        .theme-dot.selected {
+            border-color: var(--text-main);
+        }
+
+        .tag-marker {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border-radius: 4px;
+            margin-left: 4px;
+            cursor: pointer;
+            border: 1px solid var(--border);
+        }
+
+        /* Styles für Farbauswahl im Schnellmenü */
+        .color-selector-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 6px;
+        }
+        .color-option {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        .color-option.selected {
+            border-color: var(--text-main);
+        }
+
+        .standing-order-container {
+            margin-top: 6px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            background: rgba(0,0,0,0.02);
+            padding: 6px;
+            border-radius: 8px;
+        }
+        @media (prefers-color-scheme: dark) {
+            .standing-order-container { background: rgba(255,255,255,0.03); }
+        }
+
+        /* Schwebender Button (FAB) */
+        .fab {
+            position: fixed;
+            bottom: max(24px, env(safe-area-inset-bottom));
+            right: max(24px, env(safe-area-inset-right));
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+            cursor: pointer;
+            z-index: 999;
+            transition: transform 0.1s ease;
+        }
+        .fab:active {
+            transform: scale(0.9);
+        }
+
+        @media (min-width: 768px) {
+            .view-split {
+                width: 48%;
+                display: inline-block;
+                vertical-align: top;
+                margin-right: 2%;
+            }
+            .view-split:last-of-type {
+                margin-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <div class="header">
+            <div class="header-row">
+                <div class="header-title" data-i18n="app_title">BudgetApp</div>
+                <div class="header-menu-btn" onclick="toggleMenu(true)" data-i18n="menu">Menü</div>
+                <div class="clear-float"></div>
+            </div>
+
+            <div class="month-selector">
+                <div class="month-btn" onclick="changeMonth(-1)">◀</div>
+                <div class="month-display" id="current-month-label">Januar 2026</div>
+                <div class="month-btn" onclick="changeMonth(1)">▶</div>
+            </div>
+        </div>
+
+        <div class="card" style="border-left: 5px solid var(--accent);">
+            <div class="row-item">
+                <span class="lbl" data-i18n="total_budget_status">Budget Auslastung</span>
+                <span class="val" id="total-usage-percent">0% / 100%</span>
+            </div>
+            <div class="progress-container">
+                <div id="total-progress-bar" class="progress-bar"></div>
+            </div>
+            <div style="margin-top:10px; font-size:0.9rem; color:var(--text-muted);" id="irregular-costs-calc"></div>
+        </div>
+
+        <div class="view-section">
+            <div class="view-split">
+                <div class="section-title" data-i18n="sec_allocation">1. Budget-Zuweisung</div>
+                
+                <div class="card">
+                    <h3 style="margin-bottom:8px; color:var(--success);" data-i18n="incomes">Einnahmen</h3>
+                    <div class="row-item">
+                        <span class="lbl" data-i18n="base_salary">Gehalt (Standard)</span>
+                        <span class="val"><input type="text" id="in-salary" onchange="updateCoreData()" value="2000"></span>
+                    </div>
+                    <div class="row-item">
+                        <span class="lbl" data-i18n="bonus">Einmaliger Bonus</span>
+                        <span class="val"><input type="text" id="in-bonus" onchange="updateCoreData()" value="0"></span>
+                    </div>
+                    <div class="row-item">
+                        <span class="lbl" data-i18n="deductions">Abzüge / Steuern</span>
+                        <span class="val"><input type="text" id="in-deductions" onchange="updateCoreData()" value="0"></span>
+                    </div>
+                    <div class="row-item" style="font-weight:bold;">
+                        <span class="lbl" data-i18n="net_total">Gesamt Einnahmen</span>
+                        <span class="val" id="lbl-net-income">0.00</span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 style="margin-bottom:8px; color:var(--danger);" data-i18n="fix_costs">Fixkosten</h3>
+                    <div class="row-item">
+                        <span class="lbl" data-i18n="target_pct">Zielansatz %</span>
+                        <span class="val"><input type="text" id="fix-pct" onchange="updateCoreData()" value="50"></span>
+                    </div>
+                    <div class="row-item">
+                        <span class="lbl" data-i18n="effective_status">Ist-Wert</span>
+                        <span class="val" id="lbl-fix-status">0.00 / 0%</span>
+                    </div>
+                    <div id="fix-items-container"></div>
+                    <div class="btn-action" style="padding: 6px; font-size: 0.9rem;" onclick="addCategoryItem('fix')" data-i18n="add_item">+ Posten hinzufügen</div>
+                </div>
+
+                <div class="card">
+                    <h3 style="margin-bottom:8px; color:var(--warn);" data-i18n="var_costs">Variable Kosten</h3>
+                    <div class="row-item">
+                        <span class="lbl" data-i18n="target_pct">Zielansatz %</span>
+                        <span class="val"><input type="text" id="var-pct" onchange="updateCoreData()" value="30"></span>
+                    </div>
+                    <div class="row-item">
+                        <span class="lbl" data-i18n="effective_status">Ist-Wert</span>
+                        <span class="val" id="lbl-var-status">0.00 / 0%</span>
+                    </div>
+                    <div id="var-items-container"></div>
+                    <div class="btn-action" style="padding: 6px; font-size: 0.9rem;" onclick="addCategoryItem('var')" data-i18n="add_item">+ Posten hinzufügen</div>
+                </div>
+
+                <div class="card">
+                    <h3 style="margin-bottom:8px; color:var(--accent);" data-i18n="savings">Sparen</h3>
+                    <div class="row-item">
+                        <span class="lbl" data-i18n="target_pct">Zielansatz %</span>
+                        <span class="val"><input type="text" id="save-pct" onchange="updateCoreData()" value="20"></span>
+                    </div>
+                    <div class="row-item">
+                        <span class="lbl" data-i18n="effective_status">Ist-Wert</span>
+                        <span class="val" id="lbl-save-status">0.00 / 0%</span>
+                    </div>
+                    <div id="save-items-container"></div>
+                    <div class="btn-action" style="padding: 6px; font-size: 0.9rem;" onclick="addCategoryItem('save')" data-i18n="add_item">+ Posten hinzufügen</div>
+                </div>
+            </div>
+
+            <div class="view-split">
+                <div class="section-title" data-i18n="sec_pots">2. Verknüpfte Spartöpfe / Konten</div>
+                <div id="pots-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="fab" onclick="openQuickExpenseMenu()">+</div>
+
+    <div id="quick-expense-menu" class="overlay-menu">
+        <div class="header-row">
+            <div class="header-title">Ausgabe schnell buchen</div>
+            <div class="header-menu-btn" onclick="toggleQuickExpenseMenu(false)">Schließen</div>
+            <div class="clear-float"></div>
+        </div>
+
+        <div class="card">
+            <div class="row-item">
+                <span class="lbl">Posten wählen</span>
+                <span class="val">
+                    <select id="quick-target-post" style="background: rgba(0,0,0,0.03); padding: 6px; border-radius: 6px; width: 100%; text-align: left; direction: ltr;">
+                        </select>
+                </span>
+            </div>
+
+            <div class="row-item">
+                <span class="lbl">Betrag</span>
+                <span class="val"><input type="text" id="quick-amount" placeholder="0.00" style="background: rgba(0,0,0,0.03); padding: 6px; border-radius: 6px;"></span>
+            </div>
+
+            <div class="row-item">
+                <span class="lbl">Notiz / Zweck</span>
+                <span class="val"><input type="text" id="quick-note" placeholder="z.B. REWE, Tanken..." style="background: rgba(0,0,0,0.03); padding: 6px; border-radius: 6px;"></span>
+            </div>
+
+            <div class="row-item">
+                <span class="lbl">Farbkategorie</span>
+                <div class="val">
+                    <div class="color-selector-row" style="justify-content: flex-end;">
+                        <div class="color-option" style="background:#e5e5ea;" onclick="selectQuickColor(this, '')"></div>
+                        <div class="color-option" style="background:#ff3b30;" onclick="selectQuickColor(this, '#ff3b30')"></div>
+                        <div class="color-option" style="background:#ff9500;" onclick="selectQuickColor(this, '#ff9500')"></div>
+                        <div class="color-option" style="background:#34c759;" onclick="selectQuickColor(this, '#34c759')"></div>
+                        <div class="color-option" style="background:#007aff;" onclick="selectQuickColor(this, '#007aff')"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn-action" style="margin-top: 20px;" onclick="submitQuickExpense()">Ausgabe buchen</div>
+        </div>
+    </div>
+
+    <div id="settings-menu" class="overlay-menu">
+        <div class="header-row">
+            <div class="header-title" data-i18n="settings">Einstellungen</div>
+            <div class="header-menu-btn" onclick="toggleMenu(false)" data-i18n="close">Schließen</div>
+            <div class="clear-float"></div>
+        </div>
+
+        <div class="card">
+            <h3 style="margin-bottom:12px;" data-i18n="general_config">Allgemeine Konfiguration</h3>
+            <div class="row-item">
+                <span class="lbl" data-i18n="currency">Währung</span>
+                <span class="val">
+                    <select id="cfg-currency" onchange="saveConfigState()">
+                        <option value="€">EUR (€)</option>
+                        <option value="$">USD ($)</option>
+                        <option value="£">GBP (£)</option>
+                        <option value="CHF">CHF</option>
+                    </select>
+                </span>
+            </div>
+            <div class="row-item">
+                <span class="lbl" data-i18n="month_start_day">Monatsanfang (Tag)</span>
+                <span class="val"><input type="number" id="cfg-start-day" min="1" max="28" value="1" onchange="saveConfigState()"></span>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 style="margin-bottom:12px;" data-i18n="choose_theme">Farbschema / Theme wählen</h3>
+            <div style="text-align:center;">
+                <div class="theme-dot theme-blue" style="background:#007aff;" onclick="setAppTheme('blue')"></div>
+                <div class="theme-dot theme-green" style="background:#34c759;" onclick="setAppTheme('green')"></div>
+                <div class="theme-dot theme-indigo" style="background:#5856d6;" onclick="setAppTheme('indigo')"></div>
+                <div class="theme-dot theme-orange" style="background:#ff9500;" onclick="setAppTheme('orange')"></div>
+                <div class="theme-dot theme-pink" style="background:#ff2d55;" onclick="setAppTheme('pink')"></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 style="margin-bottom:12px;" data-i18n="backup_system">Backup & Datenverwaltung</h3>
+            <div class="btn-action" onclick="copyToClipboard()" data-i18n="btn_copy">Daten in Zwischenablage kopieren</div>
+            <div class="btn-action" onclick="saveDataToFile()" data-i18n="btn_save_pc">Auf PC speichern (.json)</div>
+            
+            <div style="margin-top:15px; border-top:1px solid var(--border); padding-top:15px;">
+                <textarea id="txt-import-box" style="width:100%; height:60px; background:var(--border); border-radius:8px; padding:6px; font-size:0.85rem;" placeholder="Backup-String hier einfügen..."></textarea>
+                <div class="btn-action" style="background:var(--warn);" onclick="importFromText()" data-i18n="btn_import">Backup einspielen</div>
+            </div>
+
+            <div class="btn-action btn-danger" style="margin-top:30px;" onclick="wipeAllAppData()" data-i18n="btn_wipe">Alle App-Daten unwiderruflich löschen</div>
+        </div>
+    </div>
+
+    <script>
+        const i18nDict = {
+            de: {
+                app_title: "FinanzApp Pro",
+                menu: "Menü",
+                settings: "Einstellungen",
+                close: "Schließen",
+                total_budget_status: "Zugeordnetes Gesamtbudget",
+                sec_allocation: "1. Feste & Variable Budgetposten",
+                sec_pots: "2. Verknüpfte Spartöpfe (Ist-Ausgaben)",
+                incomes: "Monatliche Einnahmen",
+                base_salary: "Grundgehalt / Feste Eingänge",
+                bonus: "Einmalige Boni / Zusätze",
+                deductions: "Abzüge / Einbehaltungen",
+                net_total: "Netto Gesamtbudget",
+                fix_costs: "Fixkosten Belastung",
+                var_costs: "Variable Budgetposten",
+                savings: "Spar-Ziele",
+                target_pct: "Zielansatz",
+                effective_status: "Ist-Wert Summe",
+                add_item: "+ Neuen Posten hinzufügen",
+                general_config: "Allgemeine Einstellungen",
+                currency: "Währungseinheit",
+                month_start_day: "Abrechnungsmonat beginnt am",
+                choose_theme: "Akzentfarbe der App wählen",
+                backup_system: "Datensicherung & System-Reset",
+                btn_copy: "Backup-Code kopieren",
+                btn_save_pc: "Als Datei auf Computer sichern",
+                btn_import: "Ausgewähltes Backup einspielen",
+                btn_wipe: "Werkseinstellungen zurücksetzen",
+                pot_budget: "Budgetierter Soll-Wert",
+                pot_prev: "Übertrag aus Vormonat",
+                pot_curr: "Zuweisung lfd. Monat",
+                pot_avail: "Verfügbarer Betrag gesamt",
+                pot_spent: "Gebuchte Ausgaben",
+                add_expense: "+ Ausgabe erfassen",
+                freq_monthly: "Monatlich",
+                freq_yearly: "1x Jährlich",
+                freq_quarterly: "4x Jährlich (Quartal)",
+                msg_copied: "Backup-Daten erfolgreich in die Zwischenablage kopiert!",
+                msg_wipe_confirm: "Möchtest du wirklich ALLE Daten löschen? Dies kann nicht rückgängig gemacht werden.",
+                msg_import_success: "Backup erfolgreich eingespielt!",
+                msg_import_err: "Ungültiges Backup-Format."
+            }
+        };
+
+        let appState = {
+            config: { currency: "€", startDay: 1, theme: "blue", lang: "de" },
+            months: {}
+        };
+
+        let currentYear = 2026;
+        let currentMonth = 5;
+        let selectedQuickExpenseColor = '';
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadStateFromLocalStorage();
+            applyLocalization();
+            renderCurrentMonthView();
+        });
+
+        function loadStateFromLocalStorage() {
+            const raw = localStorage.getItem('budget_app_pro_state');
+            if (raw) {
+                try {
+                    appState = JSON.parse(raw);
+                } catch(e) {
+                    console.error(e);
+                }
+            }
+            setAppTheme(appState.config.theme || 'blue');
+            document.getElementById('cfg-currency').value = appState.config.currency || '€';
+            document.getElementById('cfg-start-day').value = appState.config.startDay || 1;
+        }
+
+        function saveStateToLocalStorage() {
+            localStorage.setItem('budget_app_pro_state', JSON.stringify(appState));
+        }
+
+        function saveConfigState() {
+            appState.config.currency = document.getElementById('cfg-currency').value;
+            appState.config.startDay = parseInt(document.getElementById('cfg-start-day').value) || 1;
+            saveStateToLocalStorage();
+            renderCurrentMonthView();
+        }
+
+        function setAppTheme(colorClass) {
+            appState.config.theme = colorClass;
+            document.body.className = '';
+            document.body.classList.add('theme-' + colorClass);
+            document.querySelectorAll('.theme-dot').forEach(dot => {
+                dot.classList.remove('selected');
+                if(dot.classList.contains('theme-' + colorClass)) dot.classList.add('selected');
+            });
+            saveStateToLocalStorage();
+        }
+
+        function applyLocalization() {
+            const lang = 'de';
+            const pack = i18nDict[lang];
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if(pack[key]) el.textContent = pack[key];
+            });
+        }
+
+        function toggleMenu(show) {
+            document.getElementById('settings-menu').classList.toggle('active', show);
+        }
+
+        function toggleQuickExpenseMenu(show) {
+            document.getElementById('quick-expense-menu').classList.toggle('active', show);
+        }
+
+        function getMonthKey(y, m) {
+            return `${y}-${String(m + 1).padStart(2, '0')}`;
+        }
+
+        function getMonthlyProportionalValue(baseVal, freq) {
+            let val = parseFloat(baseVal) || 0;
+            if (freq === 'yearly') return val / 12;
+            if (freq === 'quarterly') return val / 3;
+            return val;
+        }
+
+        function cleanFloat(val) {
+            if (typeof val === 'string') {
+                val = val.replace(/,/g, '.');
+            }
+            let parsed = parseFloat(val);
+            return isNaN(parsed) ? 0 : parsed;
+        }
+
+        function syncMonthData(key) {
+            if (!appState.months[key]) {
+                appState.months[key] = {
+                    fix: [], var: [], save: []
+                };
+            }
+            
+            const mData = appState.months[key];
+            const sortedKeys = Object.keys(appState.months).sort();
+            const myIdx = sortedKeys.indexOf(key);
+
+            let defaultSalary = 2000, defaultBonus = 0, defaultDeductions = 0;
+            let defaultFixPct = 50, defaultVarPct = 30, defaultSavePct = 20;
+
+            if (myIdx > 0) {
+                const prevData = appState.months[sortedKeys[myIdx - 1]];
+                if (prevData) {
+                    if (prevData.salary !== undefined) defaultSalary = prevData.salary;
+                    if (prevData.bonus !== undefined) defaultBonus = prevData.bonus;
+                    if (prevData.deductions !== undefined) defaultDeductions = prevData.deductions;
+                    if (prevData.fixPctTarget !== undefined) defaultFixPct = prevData.fixPctTarget;
+                    if (prevData.varPctTarget !== undefined) defaultVarPct = prevData.varPctTarget;
+                    if (prevData.savePctTarget !== undefined) defaultSavePct = prevData.savePctTarget;
+                }
+            }
+
+            if (mData.salary === undefined) mData.salary = defaultSalary;
+            if (mData.bonus === undefined) mData.bonus = defaultBonus;
+            if (mData.deductions === undefined) mData.deductions = defaultDeductions;
+            if (mData.fixPctTarget === undefined) mData.fixPctTarget = defaultFixPct;
+            if (mData.varPctTarget === undefined) mData.varPctTarget = defaultVarPct;
+            if (mData.savePctTarget === undefined) mData.savePctTarget = defaultSavePct;
+
+            if (myIdx > 0) {
+                const prevData = appState.months[sortedKeys[myIdx - 1]];
+                ['fix', 'var', 'save'].forEach(type => {
+                    prevData[type].forEach(prevItem => {
+                        let localItem = mData[type].find(i => i.id === prevItem.id);
+                        if (!localItem) {
+                            mData[type].push({
+                                id: prevItem.id,
+                                name: prevItem.name,
+                                val: prevItem.val,
+                                freq: prevItem.freq || 'monthly',
+                                isStandingOrder: prevItem.isStandingOrder || false,
+                                expenses: []
+                            });
+                        }
+                    });
+                });
+            }
+        }
+
+        function cascadeChangesToFuture(startKey, type, itemId, field, value) {
+            const sortedKeys = Object.keys(appState.months).sort();
+            const startIdx = sortedKeys.indexOf(startKey);
+            if (startIdx === -1) return;
+
+            for (let i = startIdx + 1; i < sortedKeys.length; i++) {
+                const futureMonth = appState.months[sortedKeys[i]];
+                if (!type) {
+                    futureMonth[field] = value;
+                } else {
+                    const item = futureMonth[type].find(it => it.id === itemId);
+                    if (item) {
+                        item[field] = value;
+                    }
+                }
+            }
+        }
+
+        function cascadeAdditionToFuture(startKey, type, newItem) {
+            const sortedKeys = Object.keys(appState.months).sort();
+            const startIdx = sortedKeys.indexOf(startKey);
+            if (startIdx === -1) return;
+
+            for (let i = startIdx + 1; i < sortedKeys.length; i++) {
+                const futureMonth = appState.months[sortedKeys[i]];
+                if (!futureMonth[type].some(it => it.id === newItem.id)) {
+                    futureMonth[type].push({
+                        id: newItem.id,
+                        name: newItem.name,
+                        val: newItem.val,
+                        freq: newItem.freq,
+                        isStandingOrder: newItem.isStandingOrder || false,
+                        expenses: []
+                    });
+                }
+            }
+        }
+
+        function cascadeDeletionToFuture(startKey, type, id) {
+            const sortedKeys = Object.keys(appState.months).sort();
+            const startIdx = sortedKeys.indexOf(startKey);
+            if (startIdx === -1) return;
+
+            for (let i = startIdx + 1; i < sortedKeys.length; i++) {
+                const futureMonth = appState.months[sortedKeys[i]];
+                futureMonth[type] = futureMonth[type].filter(it => it.id !== id);
+            }
+        }
+
+        function calculatePrevMonthCarryOver(potId, currentKey) {
+            const keys = Object.keys(appState.months).sort();
+            const currIdx = keys.indexOf(currentKey);
+            if (currIdx <= 0) return 0;
+            
+            let accumulatedRollover = 0;
+            for(let i = 0; i < currIdx; i++) {
+                const checkKey = keys[i];
+                const mData = appState.months[checkKey];
+                let foundItem = [...mData.fix, ...mData.var, ...mData.save].find(item => item.id === potId);
+                if (foundItem) {
+                    let allocated = getMonthlyProportionalValue(foundItem.val, foundItem.freq);
+                    let spent = 0;
+                    if (foundItem.isStandingOrder) {
+                        spent = allocated;
+                    } else {
+                        spent = (foundItem.expenses || []).reduce((sum, exp) => sum + cleanFloat(exp.amount), 0);
+                    }
+                    accumulatedRollover += (allocated - spent);
+                }
+            }
+            return accumulatedRollover;
+        }
+
+        function changeMonth(direction) {
+            currentMonth += direction;
+            if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+            if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+            renderCurrentMonthView();
+        }
+
+        function renderCurrentMonthView() {
+            const key = getMonthKey(currentYear, currentMonth);
+            syncMonthData(key);
+            
+            const mData = appState.months[key];
+            const dateObj = new Date(currentYear, currentMonth, 1);
+            
+            document.getElementById('current-month-label').textContent = 
+                dateObj.toLocaleDateString('de-DE', { month: 'long', year: 'numeric' });
+
+            document.getElementById('in-salary').value = mData.salary;
+            document.getElementById('in-bonus').value = mData.bonus;
+            document.getElementById('in-deductions').value = mData.deductions;
+
+            document.getElementById('fix-pct').value = mData.fixPctTarget;
+            document.getElementById('var-pct').value = mData.varPctTarget;
+            document.getElementById('save-pct').value = mData.savePctTarget;
+
+            renderCategoryRows('fix', document.getElementById('fix-items-container'));
+            renderCategoryRows('var', document.getElementById('var-items-container'));
+            renderCategoryRows('save', document.getElementById('save-items-container'));
+
+            evaluateCalculationsPipeline();
+        }
+
+        function addCategoryItem(type) {
+            const key = getMonthKey(currentYear, currentMonth);
+            const mData = appState.months[key];
+            const newId = type + '_' + Date.now();
+            
+            const newItem = {
+                id: newId,
+                name: 'Neuer Posten',
+                val: 0,
+                freq: 'monthly',
+                isStandingOrder: false,
+                expenses: []
+            };
+            
+            mData[type].push(newItem);
+            cascadeAdditionToFuture(key, type, newItem);
+            
+            saveStateToLocalStorage();
+            renderCurrentMonthView();
+        }
+
+        function removeCategoryItem(type, id) {
+            const key = getMonthKey(currentYear, currentMonth);
+            
+            let choice = confirm(
+                "Möchtest du diesen Posten komplett überall löschen?\n\n" +
+                "Klicken Sie auf 'OK' für ein vollständiges Löschen (auch in der Vergangenheit).\n" +
+                "Klicken Sie auf 'Abbrechen', um den Posten nur ab DIESEM Monat für die Zukunft zu löschen."
+            );
+            
+            if (choice) {
+                Object.keys(appState.months).forEach(mKey => {
+                    if(appState.months[mKey][type]) {
+                        appState.months[mKey][type] = appState.months[mKey][type].filter(item => item.id !== id);
+                    }
+                });
+            } else {
+                appState.months[key][type] = appState.months[key][type].filter(item => item.id !== id);
+                cascadeDeletionToFuture(key, type, id);
+            }
+            
+            saveStateToLocalStorage();
+            renderCurrentMonthView();
+        }
+
+        function updateItemField(type, id, field, val) {
+            const key = getMonthKey(currentYear, currentMonth);
+            const item = appState.months[key][type].find(i => i.id === id);
+            if(item) {
+                if(field === 'val') {
+                    item.val = cleanFloat(val);
+                    cascadeChangesToFuture(key, type, id, 'val', item.val);
+                } else if(field === 'isStandingOrder') {
+                    item.isStandingOrder = val;
+                    cascadeChangesToFuture(key, type, id, 'isStandingOrder', val);
+                } else {
+                    item[field] = val;
+                    cascadeChangesToFuture(key, type, id, field, val);
+                }
+            }
+            saveStateToLocalStorage();
+            evaluateCalculationsPipeline();
+        }
+
+        function addExpenseToPot(type, potId) {
+            const key = getMonthKey(currentYear, currentMonth);
+            const item = appState.months[key][type].find(i => i.id === potId);
+            if(item) {
+                if(!item.expenses) item.expenses = [];
+                item.expenses.push({
+                    id: 'exp_' + Date.now(),
+                    amount: '',
+                    note: '',
+                    color: ''
+                });
+                saveStateToLocalStorage();
+                evaluateCalculationsPipeline();
+            }
+        }
+
+        function removeExpenseFromPot(type, potId, expId) {
+            const key = getMonthKey(currentYear, currentMonth);
+            const item = appState.months[key][type].find(i => i.id === potId);
+            if(item && item.expenses) {
+                item.expenses = item.expenses.filter(e => e.id !== expId);
+                saveStateToLocalStorage();
+                evaluateCalculationsPipeline();
+            }
+        }
+
+        function updateExpenseAmount(type, potId, expId, val) {
+            const key = getMonthKey(currentYear, currentMonth);
+            const item = appState.months[key][type].find(i => i.id === potId);
+            if(item && item.expenses) {
+                const exp = item.expenses.find(e => e.id === expId);
+                if(exp) exp.amount = val;
+            }
+            saveStateToLocalStorage();
+        }
+
+        function triggerExpensePipelineRefresh() {
+            saveStateToLocalStorage();
+            evaluateCalculationsPipeline();
+        }
+
+        function updateExpenseNote(type, potId, expId, text) {
+            const key = getMonthKey(currentYear, currentMonth);
+            const item = appState.months[key][type].find(i => i.id === potId);
+            if(item && item.expenses) {
+                const exp = item.expenses.find(e => e.id === expId);
+                if(exp) exp.note = text;
+            }
+            saveStateToLocalStorage();
+        }
+
+        function setExpenseColor(type, potId, expId, color) {
+            const key = getMonthKey(currentYear, currentMonth);
+            const item = appState.months[key][type].find(i => i.id === potId);
+            if(item && item.expenses) {
+                const exp = item.expenses.find(e => e.id === expId);
+                if(exp) exp.color = color;
+            }
+            saveStateToLocalStorage();
+            evaluateCalculationsPipeline();
+        }
+
+        function updateCoreData() {
+            const key = getMonthKey(currentYear, currentMonth);
+            const mData = appState.months[key];
+
+            mData.salary = cleanFloat(document.getElementById('in-salary').value);
+            mData.bonus = cleanFloat(document.getElementById('in-bonus').value);
+            mData.deductions = cleanFloat(document.getElementById('in-deductions').value);
+            
+            mData.fixPctTarget = cleanFloat(document.getElementById('fix-pct').value);
+            mData.varPctTarget = cleanFloat(document.getElementById('var-pct').value);
+            mData.savePctTarget = cleanFloat(document.getElementById('save-pct').value);
+
+            cascadeChangesToFuture(key, null, null, 'salary', mData.salary);
+            cascadeChangesToFuture(key, null, null, 'bonus', mData.bonus);
+            cascadeChangesToFuture(key, null, null, 'deductions', mData.deductions);
+            cascadeChangesToFuture(key, null, null, 'fixPctTarget', mData.fixPctTarget);
+            cascadeChangesToFuture(key, null, null, 'varPctTarget', mData.varPctTarget);
+            cascadeChangesToFuture(key, null, null, 'savePctTarget', mData.savePctTarget);
+
+            saveStateToLocalStorage();
+            evaluateCalculationsPipeline();
+        }
+
+        function renderCategoryRows(type, containerElement) {
+            const key = getMonthKey(currentYear, currentMonth);
+            const items = appState.months[key][type] || [];
+            const curSign = appState.config.currency || '€';
+
+            let html = '';
+            items.forEach(item => {
+                html += `
+                <div class="row-item" style="border-left: 3px solid var(--text-muted); padding-left:8px; margin-top:8px;">
+                    <div style="margin-bottom: 4px;">
+                        <input type="text" value="${item.name || ''}" style="width:55%; font-weight:600; text-align:left; background:rgba(0,0,0,0.02);" 
+                            onchange="updateItemField('${type}', '${item.id}', 'name', this.value)">
+                        <input type="text" value="${item.val || 0}" style="width:35%; text-align:right; font-weight:600;" 
+                            onchange="updateItemField('${type}', '${item.id}', 'val', this.value)"> ${curSign}
+                    </div>
+                    <div style="font-size:0.85rem; color:var(--text-muted);">
+                        <select style="width:45%; background:transparent;" onchange="updateItemField('${type}', '${item.id}', 'freq', this.value)">
+                            <option value="monthly" ${item.freq === 'monthly' ? 'selected' : ''}>${i18nDict['de'].freq_monthly}</option>
+                            <option value="yearly" ${item.freq === 'yearly' ? 'selected' : ''}>${i18nDict['de'].freq_yearly}</option>
+                            <option value="quarterly" ${item.freq === 'quarterly' ? 'selected' : ''}>${i18nDict['de'].freq_quarterly}</option>
+                        </select>
+                        <span style="color:var(--danger); float:right; cursor:pointer; font-weight:bold;" onclick="removeCategoryItem('${type}', '${item.id}')">✕</span>
+                        <div style="clear:both;"></div>
+                    </div>
+                    <div class="standing-order-container">
+                        <label style="cursor:pointer; display:block; width:100%;">
+                            <input type="checkbox" ${item.isStandingOrder ? 'checked' : ''} onchange="updateItemField('${type}', '${item.id}', 'isStandingOrder', this.checked)">
+                            🔄 Als Dauerauftrag buchen
+                        </label>
+                    </div>
+                </div>`;
+            });
+            containerElement.innerHTML = html;
+        }
+
+        /* Logik für das neue Schnellerfassungs-Menü */
+        function openQuickExpenseMenu() {
+            const key = getMonthKey(currentYear, currentMonth);
+            const mData = appState.months[key];
+            const selectEl = document.getElementById('quick-target-post');
+            
+            let allItems = [];
+            ['fix', 'var', 'save'].forEach(type => {
+                if (mData && mData[type]) {
+                    mData[type].forEach(item => {
+                        // Daueraufträge herausfiltern, da diese automatisch gebucht sind
+                        if (!item.isStandingOrder) {
+                            allItems.push({
+                                type: type,
+                                id: item.id,
+                                name: item.name || 'Unbenannter Posten'
+                            });
+                        }
+                    });
+                }
+            });
+
+            // Alphabetisch nach Postenname sortieren
+            allItems.sort((a, b) => a.name.localeCompare(b.name, 'de', { sensitivity: 'base' }));
+
+            if (allItems.length === 0) {
+                selectEl.innerHTML = `<option value="">-- Keine Posten vorhanden --</option>`;
+            } else {
+                selectEl.innerHTML = allItems.map(it => 
+                    `<option value="${it.type}|||${it.id}">${it.name}</option>`
+                ).join('');
+            }
+
+            // Felder zurücksetzen
+            document.getElementById('quick-amount').value = '';
+            document.getElementById('quick-note').value = '';
+            
+            // Erste Farbe als Standard selektieren
+            const defaultColorOpt = document.querySelector('.color-option');
+            if (defaultColorOpt) selectQuickColor(defaultColorOpt, '');
+
+            toggleQuickExpenseMenu(true);
+        }
+
+        function selectQuickColor(element, colorHex) {
+            document.querySelectorAll('.color-option').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedQuickExpenseColor = colorHex;
+        }
+
+        function submitQuickExpense() {
+            const targetVal = document.getElementById('quick-target-post').value;
+            if (!targetVal) {
+                toggleQuickExpenseMenu(false);
+                return;
+            }
+
+            const parts = targetVal.split('|||');
+            const type = parts[0];
+            const potId = parts[1];
+            const amountStr = document.getElementById('quick-amount').value.trim();
+            const noteStr = document.getElementById('quick-note').value.trim();
+
+            if (!amountStr) {
+                alert("Bitte gib einen Betrag ein.");
+                return;
+            }
+
+            const key = getMonthKey(currentYear, currentMonth);
+            const item = appState.months[key][type].find(i => i.id === potId);
+            
+            if (item) {
+                if (!item.expenses) item.expenses = [];
+                item.expenses.push({
+                    id: 'exp_' + Date.now(),
+                    amount: amountStr,
+                    note: noteStr,
+                    color: selectedQuickExpenseColor
+                });
+                
+                saveStateToLocalStorage();
+                evaluateCalculationsPipeline();
+                toggleQuickExpenseMenu(false);
+            }
+        }
+
+        function evaluateCalculationsPipeline() {
+            const key = getMonthKey(currentYear, currentMonth);
+            const mData = appState.months[key];
+            const curSign = appState.config.currency || '€';
+
+            const netIncome = mData.salary + mData.bonus - mData.deductions;
+            document.getElementById('lbl-net-income').textContent = netIncome.toFixed(2) + ' ' + curSign;
+
+            let fixSum = mData.fix.reduce((sum, i) => sum + getMonthlyProportionalValue(i.val, i.freq), 0);
+            let varSum = mData.var.reduce((sum, i) => sum + getMonthlyProportionalValue(i.val, i.freq), 0);
+            let saveSum = mData.save.reduce((sum, i) => sum + getMonthlyProportionalValue(i.val, i.freq), 0);
+
+            let fixPctReal = netIncome > 0 ? (fixSum / netIncome) * 100 : 0;
+            let varPctReal = netIncome > 0 ? (varSum / netIncome) * 100 : 0;
+            let savePctReal = netIncome > 0 ? (saveSum / netIncome) * 100 : 0;
+
+            document.getElementById('lbl-fix-status').textContent = `${fixSum.toFixed(2)} ${curSign} / ${fixPctReal.toFixed(1)}%`;
+            document.getElementById('lbl-var-status').textContent = `${varSum.toFixed(2)} ${curSign} / ${varPctReal.toFixed(1)}%`;
+            document.getElementById('lbl-save-status').textContent = `${saveSum.toFixed(2)} ${curSign} / ${savePctReal.toFixed(1)}%`;
+
+            let totalTargetPercentConfigured = mData.fixPctTarget + mData.varPctTarget + mData.savePctTarget;
+            if(totalTargetPercentConfigured <= 0) totalTargetPercentConfigured = 100;
+
+            let grandAllocatedTotal = fixSum + varSum + saveSum;
+            let overallPercent = netIncome > 0 ? (grandAllocatedTotal / netIncome) * 100 : 0;
+            
+            document.getElementById('total-usage-percent').textContent = `${overallPercent.toFixed(1)}% / ${totalTargetPercentConfigured.toFixed(0)}% (${grandAllocatedTotal.toFixed(2)} / ${netIncome.toFixed(2)} ${curSign})`;
+            
+            const pBar = document.getElementById('total-progress-bar');
+            let barWidthPercent = (overallPercent / totalTargetPercentConfigured) * 100;
+            pBar.style.width = Math.min(barWidthPercent, 100) + '%';
+            if(overallPercent > totalTargetPercentConfigured) pBar.classList.add('over'); else pBar.classList.remove('over');
+
+            let calculatedMonthlyIrregularStack = 0;
+            mData.fix.forEach(item => {
+                if(item.freq === 'yearly') {
+                    calculatedMonthlyIrregularStack += cleanFloat(item.val) / 12;
+                } else if(item.freq === 'quarterly') {
+                    calculatedMonthlyIrregularStack += cleanFloat(item.val) / 3;
+                }
+            });
+            document.getElementById('irregular-costs-calc').textContent = 
+                `Rücklage für unregelmäßige Fixkosten: ${calculatedMonthlyIrregularStack.toFixed(2)} ${curSign} / Monat`;
+
+            renderCashPotsSection(netIncome, key, curSign);
+        }
+
+        function renderCashPotsSection(netIncome, currentKey, curSign) {
+            const mData = appState.months[currentKey];
+            const potsContainer = document.getElementById('pots-container');
+            
+            let unifiedPotsList = [];
+            let irregularList = [];
+
+            ['fix', 'var', 'save'].forEach(type => {
+                mData[type].forEach(item => {
+                    if (item.freq === 'yearly' || item.freq === 'quarterly') {
+                        irregularList.push({ type: type, item: item });
+                    } else {
+                        unifiedPotsList.push({ type: type, item: item });
+                    }
+                });
+            });
+
+            let html = '';
+
+            if (irregularList.length > 0) {
+                let totalIrregPrevCarry = 0;
+                let totalIrregAllocation = 0;
+                let totalIrregSpent = 0;
+                let detailsHtml = '';
+
+                irregularList.forEach(pack => {
+                    const item = pack.item;
+                    const pCarry = calculatePrevMonthCarryOver(item.id, currentKey);
+                    const pAlloc = getMonthlyProportionalValue(item.val, item.freq);
+                    
+                    let pSpent = 0;
+                    if (item.isStandingOrder) {
+                        pSpent = pAlloc;
+                    } else {
+                        pSpent = (item.expenses || []).reduce((sum, exp) => sum + cleanFloat(exp.amount), 0);
+                    }
+
+                    totalIrregPrevCarry += pCarry;
+                    totalIrregAllocation += pAlloc;
+                    totalIrregSpent += pSpent;
+
+                    let freqLabel = item.freq === 'yearly' ? '1x Jährlich' : 'Quartal';
+                    let standingOrderText = item.isStandingOrder ? ' <span style="color:var(--success);">[Dauerauftrag aktiv]</span>' : '';
+                    
+                    detailsHtml += `
+                    <div style="font-size:0.8rem; background:rgba(0,0,0,0.01); padding:6px; border-radius:6px; margin-top:4px; border-left:2px solid var(--warn);">
+                        <strong style="color:var(--text-main);">${item.name}</strong> (${freqLabel}: ${cleanFloat(item.val).toFixed(2)} ${curSign})${standingOrderText}<br>
+                        Monats-Anteil: +${pAlloc.toFixed(2)} ${curSign} | Bisher gespart: ${(pCarry + pAlloc).toFixed(2)} ${curSign} | Ausgaben: <span style="color:var(--danger);">${pSpent.toFixed(2)} ${curSign}</span>
+                    </div>`;
+                });
+
+                let totalIrregAvailable = totalIrregPrevCarry + totalIrregAllocation;
+                let totalIrregRemaining = totalIrregAvailable - totalIrregSpent;
+
+                html += `
+                <div class="card" style="border-top:4px double var(--warn); background: rgba(255, 149, 0, 0.05);">
+                    <h4 style="font-weight:700; color:var(--warn); margin-bottom:6px;">💰 Gesamte Rücklagen für unregelmäßige Fixkosten</h4>
+                    
+                    <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:8px;">
+                        <div><span>Übertrag aus Vormonaten</span>: <span style="float:right; font-weight:600; color:var(--text-main);">${totalIrregPrevCarry.toFixed(2)} ${curSign}</span></div>
+                        <div><span>Zuweisung diesen Monat</span>: <span style="float:right; font-weight:600; color:var(--success); font-size:1rem;">+${totalIrregAllocation.toFixed(2)} ${curSign}</span></div>
+                        <div style="border-top:1px dashed var(--border); margin:3px 0;"></div>
+                        <div style="font-weight:700; color:var(--text-main);"><span>Verfügbar auf Sparbuch</span>: <span style="float:right;">${totalIrregAvailable.toFixed(2)} ${curSign}</span></div>
+                        <div><span>Ausgleiche diesen Monat</span>: <span style="float:right; color:var(--danger);">${totalIrregSpent.toFixed(2)} ${curSign}</span></div>
+                    </div>
+
+                    <div style="margin:8px 0; border-top:1px solid var(--border); padding-top:6px;">
+                        <span style="font-size:0.85rem; font-weight:600; color:var(--text-main);">Enthaltene Einzel-Posten:</span>
+                        ${detailsHtml}
+                    </div>
+
+                    <div style="margin-top:10px; background:rgba(0,0,0,0.02); padding:8px; border-radius:8px;">
+                        <span style="font-size:0.8rem; font-weight:600;">Manuelle Ausgabe aus Rücklagen buchen:</span>
+                        <select id="select-irreg-target" style="width:100%; background:var(--bg-main); padding:4px; margin-top:4px; border-radius:6px; border:1px solid var(--border);">
+                            ${irregularList.map(pack => `<option value="${pack.type}|||${pack.item.id}">${pack.item.name} ${pack.item.isStandingOrder ? '(Dauerauftrag)' : ''}</option>`).join('')}
+                        </select>
+                        <div class="btn-action" style="padding:4px; margin-top:6px; font-size:0.8rem; border-radius:6px; background:var(--warn); color:white;"
+                            onclick="let val=document.getElementById('select-irreg-target').value.split('|||'); addExpenseToPot(val[0], val[1]);">
+                            + Ausgabe auf Sparbuch-Posten buchen
+                        </div>
+                    </div>
+
+                    ${irregularList.map(pack => {
+                        let innerHtml = '';
+                        if (pack.item.isStandingOrder) {
+                            let pAlloc = getMonthlyProportionalValue(pack.item.val, pack.item.freq);
+                            innerHtml += `
+                            <div style="margin-top: 6px; padding: 6px; background: rgba(52, 199, 89, 0.08); border-radius:8px; font-size:0.85rem; border-left:4px solid var(--success);">
+                                🔄 <strong>Dauerauftrag:</strong> Automatisch ausgeglichen mit <span style="font-weight:bold;">${pAlloc.toFixed(2)} ${curSign}</span> (${pack.item.name})
+                            </div>`;
+                        }
+                        (pack.item.expenses || []).forEach(exp => {
+                            innerHtml += `
+                            <div style="margin-top: 6px; padding: 4px; background: var(--bg-main); border-radius:8px; border-left: 4px solid ${exp.color || 'var(--border)'};">
+                                <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:2px;">Zugeordnet zu: ${pack.item.name}</div>
+                                <input type="text" placeholder="Notiz/Zweck..." value="${exp.note || ''}" style="width:40%; font-size:0.85rem; text-align:left; background:rgba(0,0,0,0.02); padding:2px 4px; border-radius:4px;"
+                                    onchange="updateExpenseNote('${pack.type}', '${pack.item.id}', '${exp.id}', this.value)">
+                                <input type="text" placeholder="0.00" value="${exp.amount}" style="width:25%; font-size:0.85rem; font-weight:bold; text-align:right;"
+                                    oninput="updateExpenseAmount('${pack.type}', '${pack.item.id}', '${exp.id}', this.value)"
+                                    onchange="triggerExpensePipelineRefresh()"> ${curSign}
+                                <div style="float:right; margin-top:4px;">
+                                    <span class="tag-marker" style="background:#ff3b30;" onclick="setExpenseColor('${pack.type}', '${pack.item.id}', '${exp.id}', '#ff3b30')"></span>
+                                    <span class="tag-marker" style="background:#34c759;" onclick="setExpenseColor('${pack.type}', '${pack.item.id}', '${exp.id}', '#34c759')"></span>
+                                    <span style="color:var(--danger); margin-left:8px; font-weight:bold; cursor:pointer;" onclick="removeExpenseFromPot('${pack.type}', '${pack.item.id}', '${exp.id}')">✕</span>
+                                </div>
+                                <div style="clear:both;"></div>
+                            </div>`;
+                        });
+                        return innerHtml;
+                    }).join('')}
+
+                    <div style="margin-top:10px; text-align:right; font-weight:bold; font-size:0.95rem; color: ${totalIrregRemaining >= 0 ? 'var(--success)' : 'var(--danger)'};">
+                        Aktueller Sparbuch-Rest: ${totalIrregRemaining.toFixed(2)} ${curSign}
+                    </div>
+                </div>`;
+            }
+
+            unifiedPotsList.forEach(pack => {
+                const type = pack.type;
+                const item = pack.item;
+                const prevCarry = calculatePrevMonthCarryOver(item.id, currentKey);
+                const currentAllocation = getMonthlyProportionalValue(item.val, item.freq);
+                const totalAvailable = prevCarry + currentAllocation;
+
+                let spentSum = 0;
+                if (item.isStandingOrder) {
+                    spentSum = currentAllocation;
+                } else {
+                    spentSum = (item.expenses || []).reduce((sum, exp) => sum + cleanFloat(exp.amount), 0);
+                }
+                
+                let remainingNetBalance = totalAvailable - spentSum;
+
+                let expensesRowsHtml = '';
+                if (item.isStandingOrder) {
+                    expensesRowsHtml = `
+                    <div style="margin-top: 8px; padding: 8px; background: rgba(52, 199, 89, 0.08); border-radius:10px; font-size:0.9rem; border-left:4px solid var(--success);">
+                        🔄 <strong>Dauerauftrag aktiv:</strong> Der Soll-Betrag von <span style="font-weight:bold;">${currentAllocation.toFixed(2)} ${curSign}</span> wurde für diesen Monat automatisch voll ausgeglichen.
+                    </div>`;
+                } else {
+                    (item.expenses || []).forEach(exp => {
+                        expensesRowsHtml += `
+                        <div style="margin-top: 6px; padding: 4px; background: rgba(0,0,0,0.02); border-radius:8px; border-left: 4px solid ${exp.color || 'var(--border)'};">
+                            <input type="text" placeholder="Notiz (z.B. REWE)..." value="${exp.note || ''}" style="width:40%; font-size:0.85rem; text-align:left; background:rgba(0,0,0,0.02); padding:2px 4px; border-radius:4px;"
+                                onchange="updateExpenseNote('${type}', '${item.id}', '${exp.id}', this.value)">
+                            <input type="text" placeholder="0.00" value="${exp.amount}" style="width:25%; font-size:0.85rem; font-weight:bold; text-align:right;"
+                                oninput="updateExpenseAmount('${type}', '${item.id}', '${exp.id}', this.value)"
+                                onchange="triggerExpensePipelineRefresh()"> ${curSign}
+                            <div style="float:right; margin-top:4px;">
+                                <span class="tag-marker" style="background:#ff3b30;" onclick="setExpenseColor('${type}', '${item.id}', '${exp.id}', '#ff3b30')"></span>
+                                <span class="tag-marker" style="background:#ff9500;" onclick="setExpenseColor('${type}', '${item.id}', '${exp.id}', '#ff9500')"></span>
+                                <span class="tag-marker" style="background:#34c759;" onclick="setExpenseColor('${type}', '${item.id}', '${exp.id}', '#34c759')"></span>
+                                <span class="tag-marker" style="background:#007aff;" onclick="setExpenseColor('${type}', '${item.id}', '${exp.id}', '#007aff')"></span>
+                                <span style="color:var(--danger); margin-left:8px; font-weight:bold; cursor:pointer;" onclick="removeExpenseFromPot('${type}', '${item.id}', '${exp.id}')">✕</span>
+                            </div>
+                            <div style="clear:both;"></div>
+                        </div>`;
+                    });
+                }
+
+                html += `
+                <div class="card" style="border-top:3px solid var(--accent);">
+                    <h4 style="font-weight:700; margin-bottom:6px;">${item.name || 'Unbenannt'}</h4>
+                    <div style="font-size:0.85rem; color:var(--text-muted);">
+                        <div><span>${i18nDict['de'].pot_prev}</span>: <span style="float:right; font-weight:600; color:var(--text-main);">${prevCarry.toFixed(2)} ${curSign}</span></div>
+                        <div><span>${i18nDict['de'].pot_curr}</span>: <span style="float:right; font-weight:600; color:var(--text-main);">${currentAllocation.toFixed(2)} ${curSign}</span></div>
+                        <div style="border-top:1px dashed var(--border); margin:3px 0;"></div>
+                        <div style="font-weight:700; color:var(--text-main);"><span>${i18nDict['de'].pot_avail}</span>: <span style="float:right;">${totalAvailable.toFixed(2)} ${curSign}</span></div>
+                        <div><span>${i18nDict['de'].pot_spent}</span>: <span style="float:right; color:var(--danger);">${spentSum.toFixed(2)} ${curSign}</span></div>
+                    </div>
+                    
+                    ${expensesRowsHtml}
+
+                    ${!item.isStandingOrder ? `
+                    <div class="btn-action" style="padding:4px; margin-top:8px; font-size:0.8rem; border-radius:8px; background:var(--border); color:var(--text-main);"
+                        onclick="addExpenseToPot('${type}', '${item.id}')">
+                        ${i18nDict['de'].add_expense}
+                    </div>
+                    ` : ''}
+
+                    <div style="margin-top:8px; text-align:right; font-weight:bold; font-size:0.95rem; color: ${remainingNetBalance >= 0 ? 'var(--success)' : 'var(--danger)'};">
+                        Rest: ${remainingNetBalance.toFixed(2)} ${curSign}
+                    </div>
+                </div>`;
+            });
+
+            potsContainer.innerHTML = html || `<div style="color:var(--text-muted); text-align:center; padding:20px;">Keine verknüpften Posten verfügbar. Füge oben Budgets hinzu.</div>`;
+        }
+
+        function copyToClipboard() {
+            const payload = btoa(unescape(encodeURIComponent(JSON.stringify(appState))));
+            navigator.clipboard.writeText(payload).then(() => {
+                alert(i18nDict['de'].msg_copied);
+            });
+        }
+
+        function saveDataToFile() {
+            const payload = JSON.stringify(appState, null, 2);
+            const blob = new Blob([payload], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `budget_app_backup_${getMonthKey(currentYear, currentMonth)}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function importFromText() {
+            const box = document.getElementById('txt-import-box');
+            if(!box.value.trim()) return;
+            try {
+                let parsed;
+                if(box.value.trim().startsWith('{')) {
+                    parsed = JSON.parse(box.value.trim());
+                } else {
+                    parsed = JSON.parse(decodeURIComponent(escape(atob(box.value.trim()))));
+                }
+                
+                if(parsed && parsed.months) {
+                    appState = parsed;
+                    saveStateToLocalStorage();
+                    alert(i18nDict['de'].msg_import_success);
+                    toggleMenu(false);
+                    renderCurrentMonthView();
+                } else {
+                    alert(i18nDict['de'].msg_import_err);
+                }
+            } catch(e) {
+                alert(i18nDict['de'].msg_import_err);
+            }
+        }
+
+        function wipeAllAppData() {
+            if(confirm(i18nDict['de'].msg_wipe_confirm)) {
+                localStorage.removeItem('budget_app_pro_state');
+                location.reload();
+            }
+        }
+    </script>
+</body>
+</html>
