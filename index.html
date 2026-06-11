@@ -577,7 +577,7 @@
         </div>
     </div>
 
-    <script>
+   <script>
         const i18nDict = {
             de: {
                 app_title: "FinanzApp Pro",
@@ -628,37 +628,33 @@
             months: {}
         };
 
-// Ändere die Definitionen zu leeren Variablen:
-let currentYear;
-let currentMonth;
-let selectedQuickExpenseColor = '';
-
-window.addEventListener('DOMContentLoaded', () => {
-    loadStateFromLocalStorage();
-    applyLocalization();
-    
-    // Automatische Ermittlung des korrekten Abrechnungsmonats:
-    const heute = new Date(); // Nutzt das aktuelle Datum (z. B. 11.06.2026)
-    const startTag = appState.config.startDay || 1;
-    
-    if (heute.getDate() < startTag) {
-        // Wir sind vor dem Stichtag, also befinden wir uns im vorherigen Abrechnungsmonat
-        const vormonat = new Date(heute.getFullYear(), heute.getMonth() - 1, 1);
-        currentYear = vormonat.getFullYear();
-        currentMonth = vormonat.getMonth();
-    } else {
-        // Wir haben den Stichtag erreicht oder überschritten
-        currentYear = heute.getFullYear();
-        currentMonth = heute.getMonth();
-    }
-    
-    renderCurrentMonthView();
-});
+        // Standard-Startwerte festlegen, damit die App stabil lädt
+        const jetzt = new Date();
+        let currentYear = jetzt.getFullYear();
+        let currentMonth = jetzt.getMonth();
         let selectedQuickExpenseColor = '';
 
         window.addEventListener('DOMContentLoaded', () => {
+            // 1. Zuerst das Backup und die Speicherdaten stabil laden
             loadStateFromLocalStorage();
             applyLocalization();
+            
+            // 2. Jetzt das Datum basierend auf deinem Abrechnungstag korrigieren
+            const heute = new Date();
+            const startTag = parseInt(appState.config.startDay) || 1;
+            
+            if (heute.getDate() < startTag) {
+                // Vor dem Stichtag springen wir automatisch einen Monat zurück
+                const vormonat = new Date(heute.getFullYear(), heute.getMonth() - 1, 1);
+                currentYear = vormonat.getFullYear();
+                currentMonth = vormonat.getMonth();
+            } else {
+                // Ab dem Stichtag nehmen wir den aktuellen Monat
+                currentYear = heute.getFullYear();
+                currentMonth = heute.getMonth();
+            }
+            
+            // 3. Erst jetzt die Ansicht mit den korrekten Daten rendern
             renderCurrentMonthView();
         });
 
@@ -867,41 +863,32 @@ window.addEventListener('DOMContentLoaded', () => {
             renderCurrentMonthView();
         }
 
-function renderCurrentMonthView() {
+        function renderCurrentMonthView() {
             const key = getMonthKey(currentYear, currentMonth);
             syncMonthData(key);
             
             const mData = appState.months[key];
             
-            // Berechne den genauen Abrechnungszeitraum basierend auf dem eingestellten Tag
             const startDay = parseInt(appState.config.startDay) || 1;
             let labelText = '';
             
             if (startDay === 1) {
-                // Wenn der Monat am 1. beginnt, bleibt es bei der Standardanzeige
                 const dateObj = new Date(currentYear, currentMonth, 1);
                 labelText = dateObj.toLocaleDateString('de-DE', { month: 'long', year: 'numeric' });
             } else {
-                // Berechne das Start- und Enddatum des individuellen Abrechnungszeitraums
                 const startDate = new Date(currentYear, currentMonth, startDay);
-                
-                // Das Enddatum ist einen Tag vor dem Starttag des Folgemonats
                 const endDate = new Date(currentYear, currentMonth + 1, startDay - 1);
                 
                 const options = { day: '2-digit', month: '2-digit' };
                 const startStr = startDate.toLocaleDateString('de-DE', options);
                 const endStr = endDate.toLocaleDateString('de-DE', options);
                 
-                // Jahr des Zeitraums ermitteln (falls der Zeitraum über den Jahreswechsel geht)
                 const yearStr = startDate.getFullYear();
-                
-                // Schöne Formatierung ohne doppelte Punkte
                 labelText = `${startStr} - ${endStr} (${yearStr})`;
             }
             
             document.getElementById('current-month-label').textContent = labelText;
 
-            // Der restliche Code bleibt absolut identisch
             document.getElementById('in-salary').value = mData.salary;
             document.getElementById('in-bonus').value = mData.bonus;
             document.getElementById('in-deductions').value = mData.deductions;
@@ -916,6 +903,7 @@ function renderCurrentMonthView() {
 
             evaluateCalculationsPipeline();
         }
+
         function addCategoryItem(type) {
             const key = getMonthKey(currentYear, currentMonth);
             const mData = appState.months[key];
@@ -1100,7 +1088,6 @@ function renderCurrentMonthView() {
             containerElement.innerHTML = html;
         }
 
-        /* Logik für das neue Schnellerfassungs-Menü */
         function openQuickExpenseMenu() {
             const key = getMonthKey(currentYear, currentMonth);
             const mData = appState.months[key];
@@ -1110,7 +1097,6 @@ function renderCurrentMonthView() {
             ['fix', 'var', 'save'].forEach(type => {
                 if (mData && mData[type]) {
                     mData[type].forEach(item => {
-                        // Daueraufträge herausfiltern, da diese automatisch gebucht sind
                         if (!item.isStandingOrder) {
                             allItems.push({
                                 type: type,
@@ -1122,7 +1108,6 @@ function renderCurrentMonthView() {
                 }
             });
 
-            // Alphabetisch nach Postenname sortieren
             allItems.sort((a, b) => a.name.localeCompare(b.name, 'de', { sensitivity: 'base' }));
 
             if (allItems.length === 0) {
@@ -1133,11 +1118,9 @@ function renderCurrentMonthView() {
                 ).join('');
             }
 
-            // Felder zurücksetzen
             document.getElementById('quick-amount').value = '';
             document.getElementById('quick-note').value = '';
             
-            // Erste Farbe als Standard selektieren
             const defaultColorOpt = document.querySelector('.color-option');
             if (defaultColorOpt) selectQuickColor(defaultColorOpt, '');
 
@@ -1186,7 +1169,6 @@ function renderCurrentMonthView() {
             }
         }
 
-/* Neue Rendering-Pipeline für das Dashboard oben */
         function renderQuickOverview(key) {
             const mData = appState.months[key];
             const container = document.getElementById('quick-overview-container');
@@ -1197,14 +1179,12 @@ function renderCurrentMonthView() {
             let html = '';
             let validItemsCount = 0;
 
-            // Variablen für die zusammengefassten Rücklagen (jährlich/quartalsweise)
             let totalIrregAvailable = 0;
             let totalIrregSpent = 0;
             let hasIrregItems = false;
 
             ['fix', 'var', 'save'].forEach(type => {
                 (mData[type] || []).forEach(item => {
-                    // Daueraufträge komplett ignorieren
                     if (item.isStandingOrder) return;
 
                     const prevCarry = calculatePrevMonthCarryOver(item.id, key);
@@ -1212,17 +1192,14 @@ function renderCurrentMonthView() {
                     const totalAvailable = prevCarry + currentAllocation;
                     const spentSum = (item.expenses || []).reduce((sum, exp) => sum + cleanFloat(exp.amount), 0);
 
-                    // Unterscheidung: Unregelmäßig vs. Monatlich
                     if (item.freq === 'yearly' || item.freq === 'quarterly') {
                         totalIrregAvailable += totalAvailable;
                         totalIrregSpent += spentSum;
                         hasIrregItems = true;
                     } else {
-                        // Monatlicher Einzelposten
                         validItemsCount++;
                         const remaining = totalAvailable - spentSum;
 
-                        // Kreisberechnung
                         const radius = 8;
                         const circumference = 2 * Math.PI * radius;
                         
@@ -1231,19 +1208,19 @@ function renderCurrentMonthView() {
                         let greenPercentage = 0;
 
                         if (remaining > 200) {
-                            strokeColor = 'var(--accent)'; // Blau bei über 200 Euro
+                            strokeColor = 'var(--accent)';
                             bgColor = 'var(--accent)';
                             greenPercentage = 100;
                         } else if (remaining >= 100 && remaining <= 200) {
-                            strokeColor = 'var(--success)'; // Grün zwischen 100 und 200 Euro
+                            strokeColor = 'var(--success)';
                             bgColor = 'var(--success)';
                             greenPercentage = 100;
                         } else if (remaining < 100 && remaining > 0) {
-                            strokeColor = 'var(--success)'; // Dynamischer Verlauf unter 100 Euro
-                            bgColor = 'var(--warn)';        // Hintergrund wird Orange
-                            greenPercentage = remaining;    // Da Max 100 ist, entspricht Betrag gleich Prozent
+                            strokeColor = 'var(--success)';
+                            bgColor = 'var(--warn)';
+                            greenPercentage = remaining;
                         } else {
-                            strokeColor = 'var(--warn)';    // Komplett Orange im Minus
+                            strokeColor = 'var(--warn)';
                             bgColor = 'var(--warn)';
                             greenPercentage = 0;
                         }
@@ -1264,7 +1241,6 @@ function renderCurrentMonthView() {
                 });
             });
 
-            // Wenn es unregelmäßige Posten gab, fügen wir EINEN Sammelkreis hinzu
             if (hasIrregItems) {
                 validItemsCount++;
                 const irregRemaining = totalIrregAvailable - totalIrregSpent;
@@ -1360,9 +1336,7 @@ function renderCurrentMonthView() {
             document.getElementById('irregular-costs-calc').textContent = 
                 `Rücklage für unregelmäßige Fixkosten: ${calculatedMonthlyIrregularStack.toFixed(2)} ${curSign} / Monat`;
 
-            // Aktualisiere die neue Kurzübersicht oben
             renderQuickOverview(key);
-
             renderCashPotsSection(netIncome, key, curSign);
         }
 
