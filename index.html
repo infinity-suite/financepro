@@ -628,8 +628,10 @@
             months: {}
         };
 
-        let currentYear = 2026;
-        let currentMonth = 5;
+ // Ermittelt das aktuelle Datum beim Starten der App
+const today = new Date();
+let currentYear = today.getFullYear();
+let currentMonth = today.getMonth();
         let selectedQuickExpenseColor = '';
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -871,12 +873,13 @@ function renderCurrentMonthView() {
                 // Jahr des Zeitraums ermitteln (falls der Zeitraum über den Jahreswechsel geht)
                 const yearStr = startDate.getFullYear();
                 
-                labelText = `${startStr}. - ${endStr}. (${yearStr})`;
+                // Schöne Formatierung ohne doppelte Punkte
+                labelText = `${startStr} - ${endStr} (${yearStr})`;
             }
             
             document.getElementById('current-month-label').textContent = labelText;
 
-            // Der restliche Code der Funktion bleibt absolut identisch
+            // Der restliche Code bleibt absolut identisch
             document.getElementById('in-salary').value = mData.salary;
             document.getElementById('in-bonus').value = mData.bonus;
             document.getElementById('in-deductions').value = mData.deductions;
@@ -891,7 +894,6 @@ function renderCurrentMonthView() {
 
             evaluateCalculationsPipeline();
         }
-
         function addCategoryItem(type) {
             const key = getMonthKey(currentYear, currentMonth);
             const mData = appState.months[key];
