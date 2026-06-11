@@ -65,7 +65,7 @@
             top: 0;
             left: 0;
             padding-top: max(20px, env(safe-area-inset-top));
-            padding-bottom: max(80px, env(safe-area-inset-bottom)); /* Platz für FAB */
+            padding-bottom: max(80px, env(safe-area-inset-bottom));
             padding-left: max(16px, env(safe-area-inset-left));
             padding-right: max(16px, env(safe-area-inset-right));
             overflow-y: auto;
@@ -146,7 +146,6 @@
             text-align: center;
         }
 
-        /* Neue Styles für das Dashboard oben */
         .quick-overview-grid {
             display: flex;
             flex-wrap: wrap;
@@ -307,7 +306,6 @@
             border: 1px solid var(--border);
         }
 
-        /* Styles für Farbauswahl im Schnellmenü */
         .color-selector-row {
             display: flex;
             gap: 8px;
@@ -336,7 +334,6 @@
             .standing-order-container { background: rgba(255,255,255,0.03); }
         }
 
-        /* Schwebender Button (FAB) */
         .fab {
             position: fixed;
             bottom: max(24px, env(safe-area-inset-bottom));
@@ -395,8 +392,9 @@
                     </div>
             </div>
 
+            <!-- Interaktiver Bereich für unkategorisierte Ausgaben direkt oben -->
             <div class="card" id="missing-color-section" style="margin-top: 12px; margin-bottom: 0; padding: 12px; border-left: 5px solid #ff9500; display: none;">
-                <h4 style="font-size: 0.9rem; font-weight: 700; color: #ff9500; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Unkategorisierte Ausgaben (Keine Farbe)</h4>
+                <h4 style="font-size: 0.9rem; font-weight: 700; color: #ff9500; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Unkategorisierte Ausgaben (Hier direkt färben)</h4>
                 <div id="missing-color-container" style="display: flex; flex-direction: column; gap: 8px;"></div>
             </div>
         </div>
@@ -420,15 +418,15 @@
                     <h3 style="margin-bottom:8px; color:var(--success);" data-i18n="incomes">Einnahmen</h3>
                     <div class="row-item">
                         <span class="lbl" data-i18n="base_salary">Gehalt (Standard)</span>
-                        <span class="val"><input type="text" id="in-salary" onchange="updateCoreData()" value="2000"></span>
+                        <span class="val"><input type="text" inputmode="decimal" pattern="[0-9.,]*" id="in-salary" onchange="updateCoreData()" value="2000"></span>
                     </div>
                     <div class="row-item">
                         <span class="lbl" data-i18n="bonus">Einmaliger Bonus</span>
-                        <span class="val"><input type="text" id="in-bonus" onchange="updateCoreData()" value="0"></span>
+                        <span class="val"><input type="text" inputmode="decimal" pattern="[0-9.,]*" id="in-bonus" onchange="updateCoreData()" value="0"></span>
                     </div>
                     <div class="row-item">
                         <span class="lbl" data-i18n="deductions">Abzüge / Steuern</span>
-                        <span class="val"><input type="text" id="in-deductions" onchange="updateCoreData()" value="0"></span>
+                        <span class="val"><input type="text" inputmode="decimal" pattern="[0-9.,]*" id="in-deductions" onchange="updateCoreData()" value="0"></span>
                     </div>
                     <div class="row-item" style="font-weight:bold;">
                         <span class="lbl" data-i18n="net_total">Gesamt Einnahmen</span>
@@ -440,7 +438,7 @@
                     <h3 style="margin-bottom:8px; color:var(--danger);" data-i18n="fix_costs">Fixkosten</h3>
                     <div class="row-item">
                         <span class="lbl" data-i18n="target_pct">Zielansatz %</span>
-                        <span class="val"><input type="text" id="fix-pct" onchange="updateCoreData()" value="50"></span>
+                        <span class="val"><input type="text" inputmode="decimal" pattern="[0-9.,]*" id="fix-pct" onchange="updateCoreData()" value="50"></span>
                     </div>
                     <div class="row-item">
                         <span class="lbl" data-i18n="effective_status">Ist-Wert</span>
@@ -454,7 +452,7 @@
                     <h3 style="margin-bottom:8px; color:var(--warn);" data-i18n="var_costs">Variable Kosten</h3>
                     <div class="row-item">
                         <span class="lbl" data-i18n="target_pct">Zielansatz %</span>
-                        <span class="val"><input type="text" id="var-pct" onchange="updateCoreData()" value="30"></span>
+                        <span class="val"><input type="text" inputmode="decimal" pattern="[0-9.,]*" id="var-pct" onchange="updateCoreData()" value="30"></span>
                     </div>
                     <div class="row-item">
                         <span class="lbl" data-i18n="effective_status">Ist-Wert</span>
@@ -468,7 +466,7 @@
                     <h3 style="margin-bottom:8px; color:var(--accent);" data-i18n="savings">Sparen</h3>
                     <div class="row-item">
                         <span class="lbl" data-i18n="target_pct">Zielansatz %</span>
-                        <span class="val"><input type="text" id="save-pct" onchange="updateCoreData()" value="20"></span>
+                        <span class="val"><input type="text" inputmode="decimal" pattern="[0-9.,]*" id="save-pct" onchange="updateCoreData()" value="20"></span>
                     </div>
                     <div class="row-item">
                         <span class="lbl" data-i18n="effective_status">Ist-Wert</span>
@@ -506,7 +504,7 @@
 
             <div class="row-item">
                 <span class="lbl">Betrag</span>
-                <span class="val"><input type="text" id="quick-amount" placeholder="0.00" style="background: rgba(0,0,0,0.03); padding: 6px; border-radius: 6px;"></span>
+                <span class="val"><input type="text" inputmode="decimal" pattern="[0-9.,]*" id="quick-amount" placeholder="0.00" style="background: rgba(0,0,0,0.03); padding: 6px; border-radius: 6px;"></span>
             </div>
 
             <div class="row-item">
@@ -1062,7 +1060,7 @@
                     <div style="margin-bottom: 4px;">
                         <input type="text" value="${item.name || ''}" style="width:55%; font-weight:600; text-align:left; background:rgba(0,0,0,0.02);" 
                             onchange="updateItemField('${type}', '${item.id}', 'name', this.value)">
-                        <input type="text" value="${item.val || 0}" style="width:35%; text-align:right; font-weight:600;" 
+                        <input type="text" inputmode="decimal" pattern="[0-9.,]*" value="${item.val || 0}" style="width:35%; text-align:right; font-weight:600;" 
                             onchange="updateItemField('${type}', '${item.id}', 'val', this.value)"> ${curSign}
                     </div>
                     <div style="font-size:0.85rem; color:var(--text-muted);">
@@ -1166,7 +1164,7 @@
             }
         }
 
-function renderQuickOverview(key) {
+        function renderQuickOverview(key) {
             const mData = appState.months[key];
             const container = document.getElementById('quick-overview-container');
             const section = document.getElementById('quick-overview-section');
@@ -1179,7 +1177,6 @@ function renderQuickOverview(key) {
             let totalIrregSpent = 0;
             let hasIrregItems = false;
 
-            // --- HIER STARTET DIE NEUE LOGIK FÜR AUSGABEN OHNE FARBKATEGORIE ---
             const colorContainer = document.getElementById('missing-color-container');
             const colorSection = document.getElementById('missing-color-section');
             let colorHtml = '';
@@ -1193,14 +1190,17 @@ function renderQuickOverview(key) {
                             const noteText = exp.note ? ` - <span style="font-style: italic; color: var(--text-muted);">${exp.note}</span>` : '';
                             
                             colorHtml += `
-                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; background: rgba(0,0,0,0.02); border-radius: 6px; font-size: 0.9rem;">
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: rgba(0,0,0,0.02); border-radius: 10px; font-size: 0.9rem; border-left: 3px solid #ff9500;">
                                     <div>
                                         <span style="font-weight: 600; color: var(--text-main);">${item.name || 'Posten'}</span>
                                         ${noteText}
+                                        <div style="font-weight: 700; color: var(--danger); margin-top: 2px;">${cleanFloat(exp.amount).toFixed(2)} ${appState.config.currency || '€'}</div>
                                     </div>
-                                    <div style="display: flex; align-items: center; gap: 10px;">
-                                        <span style="font-weight: 700; color: var(--danger);">${cleanFloat(exp.amount).toFixed(2)} ${appState.config.currency || '€'}</span>
-                                        <div style="font-size: 0.8rem; color: #ff9500; font-weight: bold; border: 1px solid #ff9500; padding: 3px 6px; border-radius: 4px;">Bitte unten färben</div>
+                                    <div style="display: flex; align-items: center; gap: 6px;">
+                                        <span class="tag-marker" style="background:#ff3b30; width:22px; height:22px; margin:0;" onclick="setExpenseColor('${type}', '${item.id}', '${exp.id}', '#ff3b30')"></span>
+                                        <span class="tag-marker" style="background:#ff9500; width:22px; height:22px; margin:0;" onclick="setExpenseColor('${type}', '${item.id}', '${exp.id}', '#ff9500')"></span>
+                                        <span class="tag-marker" style="background:#34c759; width:22px; height:22px; margin:0;" onclick="setExpenseColor('${type}', '${item.id}', '${exp.id}', '#34c759')"></span>
+                                        <span class="tag-marker" style="background:#007aff; width:22px; height:22px; margin:0;" onclick="setExpenseColor('${type}', '${item.id}', '${exp.id}', '#007aff')"></span>
                                     </div>
                                 </div>
                             `;
@@ -1215,7 +1215,6 @@ function renderQuickOverview(key) {
             } else if (colorSection) {
                 colorSection.style.display = 'none';
             }
-            // --- ENDE DER NEUEN LOGIK ---
 
             ['fix', 'var', 'save'].forEach(type => {
                 (mData[type] || []).forEach(item => {
@@ -1473,7 +1472,7 @@ function renderQuickOverview(key) {
                                 <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:2px;">Zugeordnet zu: ${pack.item.name}</div>
                                 <input type="text" placeholder="Notiz/Zweck..." value="${exp.note || ''}" style="width:40%; font-size:0.85rem; text-align:left; background:rgba(0,0,0,0.02); padding:2px 4px; border-radius:4px;"
                                     onchange="updateExpenseNote('${pack.type}', '${pack.item.id}', '${exp.id}', this.value)">
-                                <input type="text" placeholder="0.00" value="${exp.amount}" style="width:25%; font-size:0.85rem; font-weight:bold; text-align:right;"
+                                <input type="text" inputmode="decimal" pattern="[0-9.,]*" placeholder="0.00" value="${exp.amount}" style="width:25%; font-size:0.85rem; font-weight:bold; text-align:right;"
                                     oninput="updateExpenseAmount('${pack.type}', '${pack.item.id}', '${exp.id}', this.value)"
                                     onchange="triggerExpensePipelineRefresh()"> ${curSign}
                                 <div style="float:right; margin-top:4px;">
@@ -1521,7 +1520,7 @@ function renderQuickOverview(key) {
                         <div style="margin-top: 6px; padding: 4px; background: rgba(0,0,0,0.02); border-radius:8px; border-left: 4px solid ${exp.color || 'var(--border)'};">
                             <input type="text" placeholder="Notiz (z.B. REWE)..." value="${exp.note || ''}" style="width:40%; font-size:0.85rem; text-align:left; background:rgba(0,0,0,0.02); padding:2px 4px; border-radius:4px;"
                                 onchange="updateExpenseNote('${type}', '${item.id}', '${exp.id}', this.value)">
-                            <input type="text" placeholder="0.00" value="${exp.amount}" style="width:25%; font-size:0.85rem; font-weight:bold; text-align:right;"
+                            <input type="text" inputmode="decimal" pattern="[0-9.,]*" placeholder="0.00" value="${exp.amount}" style="width:25%; font-size:0.85rem; font-weight:bold; text-align:right;"
                                 oninput="updateExpenseAmount('${type}', '${item.id}', '${exp.id}', this.value)"
                                 onchange="triggerExpensePipelineRefresh()"> ${curSign}
                             <div style="float:right; margin-top:4px;">
