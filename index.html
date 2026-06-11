@@ -394,6 +394,11 @@
                 <div class="quick-overview-grid" id="quick-overview-container">
                     </div>
             </div>
+
+            <div class="card" id="missing-color-section" style="margin-top: 12px; margin-bottom: 0; padding: 12px; border-left: 5px solid #ff9500; display: none;">
+                <h4 style="font-size: 0.9rem; font-weight: 700; color: #ff9500; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Unkategorisierte Ausgaben (Keine Farbe)</h4>
+                <div id="missing-color-container" style="display: flex; flex-direction: column; gap: 8px;"></div>
+            </div>
         </div>
 
         <div class="card" style="border-left: 5px solid var(--accent);">
@@ -577,7 +582,7 @@
         </div>
     </div>
 
-   <script>
+<script>
         const i18nDict = {
             de: {
                 app_title: "FinanzApp Pro",
@@ -628,33 +633,27 @@
             months: {}
         };
 
-        // Standard-Startwerte festlegen, damit die App stabil lädt
         const jetzt = new Date();
         let currentYear = jetzt.getFullYear();
         let currentMonth = jetzt.getMonth();
         let selectedQuickExpenseColor = '';
 
         window.addEventListener('DOMContentLoaded', () => {
-            // 1. Zuerst das Backup und die Speicherdaten stabil laden
             loadStateFromLocalStorage();
             applyLocalization();
             
-            // 2. Jetzt das Datum basierend auf deinem Abrechnungstag korrigieren
             const heute = new Date();
             const startTag = parseInt(appState.config.startDay) || 1;
             
             if (heute.getDate() < startTag) {
-                // Vor dem Stichtag springen wir automatisch einen Monat zurück
                 const vormonat = new Date(heute.getFullYear(), heute.getMonth() - 1, 1);
                 currentYear = vormonat.getFullYear();
                 currentMonth = vormonat.getMonth();
             } else {
-                // Ab dem Stichtag nehmen wir den aktuellen Monat
                 currentYear = heute.getFullYear();
                 currentMonth = heute.getMonth();
             }
             
-            // 3. Erst jetzt die Ansicht mit den korrekten Daten rendern
             renderCurrentMonthView();
         });
 
@@ -695,7 +694,7 @@
         }
 
         function applyLocalization() {
-            const lang = 'de';
+            const lang = appState.config.lang || 'de';
             const pack = i18nDict[lang];
             document.querySelectorAll('[data-i18n]').forEach(el => {
                 const key = el.getAttribute('data-i18n');
@@ -868,7 +867,6 @@
             syncMonthData(key);
             
             const mData = appState.months[key];
-            
             const startDay = parseInt(appState.config.startDay) || 1;
             let labelText = '';
             
@@ -882,7 +880,6 @@
                 const options = { day: '2-digit', month: '2-digit' };
                 const startStr = startDate.toLocaleDateString('de-DE', options);
                 const endStr = endDate.toLocaleDateString('de-DE', options);
-                
                 const yearStr = startDate.getFullYear();
                 labelText = `${startStr} - ${endStr} (${yearStr})`;
             }
@@ -927,7 +924,6 @@
 
         function removeCategoryItem(type, id) {
             const key = getMonthKey(currentYear, currentMonth);
-            
             let choice = confirm(
                 "Möchtest du diesen Posten komplett überall löschen?\n\n" +
                 "Klicken Sie auf 'OK' für ein vollständiges Löschen (auch in der Vergangenheit).\n" +
@@ -1057,6 +1053,7 @@
             const key = getMonthKey(currentYear, currentMonth);
             const items = appState.months[key][type] || [];
             const curSign = appState.config.currency || '€';
+            const lang = appState.config.lang || 'de';
 
             let html = '';
             items.forEach(item => {
@@ -1070,9 +1067,9 @@
                     </div>
                     <div style="font-size:0.85rem; color:var(--text-muted);">
                         <select style="width:45%; background:transparent;" onchange="updateItemField('${type}', '${item.id}', 'freq', this.value)">
-                            <option value="monthly" ${item.freq === 'monthly' ? 'selected' : ''}>${i18nDict['de'].freq_monthly}</option>
-                            <option value="yearly" ${item.freq === 'yearly' ? 'selected' : ''}>${i18nDict['de'].freq_yearly}</option>
-                            <option value="quarterly" ${item.freq === 'quarterly' ? 'selected' : ''}>${i18nDict['de'].freq_quarterly}</option>
+                            <option value="monthly" ${item.freq === 'monthly' ? 'selected' : ''}>${i18nDict[lang].freq_monthly}</option>
+                            <option value="yearly" ${item.freq === 'yearly' ? 'selected' : ''}>${i18nDict[lang].freq_yearly}</option>
+                            <option value="quarterly" ${item.freq === 'quarterly' ? 'selected' : ''}>${i18nDict[lang].freq_quarterly}</option>
                         </select>
                         <span style="color:var(--danger); float:right; cursor:pointer; font-weight:bold;" onclick="removeCategoryItem('${type}', '${item.id}')">✕</span>
                         <div style="clear:both;"></div>
@@ -1169,7 +1166,7 @@
             }
         }
 
-        function renderQuickOverview(key) {
+function renderQuickOverview(key) {
             const mData = appState.months[key];
             const container = document.getElementById('quick-overview-container');
             const section = document.getElementById('quick-overview-section');
@@ -1178,10 +1175,47 @@
 
             let html = '';
             let validItemsCount = 0;
-
             let totalIrregAvailable = 0;
             let totalIrregSpent = 0;
             let hasIrregItems = false;
+
+            // --- HIER STARTET DIE NEUE LOGIK FÜR AUSGABEN OHNE FARBKATEGORIE ---
+            const colorContainer = document.getElementById('missing-color-container');
+            const colorSection = document.getElementById('missing-color-section');
+            let colorHtml = '';
+            let colorCount = 0;
+
+            ['fix', 'var', 'save'].forEach(type => {
+                (mData[type] || []).forEach(item => {
+                    (item.expenses || []).forEach(exp => {
+                        if (!exp.color || exp.color === '' || exp.color === 'transparent' || exp.color === '#ccc' || exp.color === '#e5e5ea') {
+                            colorCount++;
+                            const noteText = exp.note ? ` - <span style="font-style: italic; color: var(--text-muted);">${exp.note}</span>` : '';
+                            
+                            colorHtml += `
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; background: rgba(0,0,0,0.02); border-radius: 6px; font-size: 0.9rem;">
+                                    <div>
+                                        <span style="font-weight: 600; color: var(--text-main);">${item.name || 'Posten'}</span>
+                                        ${noteText}
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 10px;">
+                                        <span style="font-weight: 700; color: var(--danger);">${cleanFloat(exp.amount).toFixed(2)} ${appState.config.currency || '€'}</span>
+                                        <div style="font-size: 0.8rem; color: #ff9500; font-weight: bold; border: 1px solid #ff9500; padding: 3px 6px; border-radius: 4px;">Bitte unten färben</div>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    });
+                });
+            });
+
+            if (colorCount > 0 && colorSection && colorContainer) {
+                colorSection.style.display = 'block';
+                colorContainer.innerHTML = colorHtml;
+            } else if (colorSection) {
+                colorSection.style.display = 'none';
+            }
+            // --- ENDE DER NEUEN LOGIK ---
 
             ['fix', 'var', 'save'].forEach(type => {
                 (mData[type] || []).forEach(item => {
@@ -1199,33 +1233,33 @@
                     } else {
                         validItemsCount++;
                         const remaining = totalAvailable - spentSum;
-
+                        
                         const radius = 8;
                         const circumference = 2 * Math.PI * radius;
                         
                         let strokeColor = 'var(--success)';
                         let bgColor = 'var(--warn)';
-                        let greenPercentage = 0;
+                        let fillPercentage = 0;
 
                         if (remaining > 200) {
                             strokeColor = 'var(--accent)';
                             bgColor = 'var(--accent)';
-                            greenPercentage = 100;
+                            fillPercentage = 100;
                         } else if (remaining >= 100 && remaining <= 200) {
                             strokeColor = 'var(--success)';
                             bgColor = 'var(--success)';
-                            greenPercentage = 100;
+                            fillPercentage = 100;
                         } else if (remaining < 100 && remaining > 0) {
                             strokeColor = 'var(--success)';
                             bgColor = 'var(--warn)';
-                            greenPercentage = remaining;
+                            fillPercentage = (remaining / 100) * 100;
                         } else {
-                            strokeColor = 'var(--warn)';
-                            bgColor = 'var(--warn)';
-                            greenPercentage = 0;
+                            strokeColor = 'var(--danger)';
+                            bgColor = 'var(--danger)';
+                            fillPercentage = 0;
                         }
 
-                        const strokeDashoffset = circumference - (greenPercentage / 100) * circumference;
+                        const strokeDashoffset = circumference - (fillPercentage / 100) * circumference;
 
                         html += `
                         <div class="quick-overview-item">
@@ -1244,33 +1278,33 @@
             if (hasIrregItems) {
                 validItemsCount++;
                 const irregRemaining = totalIrregAvailable - totalIrregSpent;
-
+                
                 const radius = 8;
                 const circumference = 2 * Math.PI * radius;
                 
                 let strokeColor = 'var(--success)';
                 let bgColor = 'var(--warn)';
-                let irregGreenPercentage = 0;
+                let irregFillPercentage = 0;
 
                 if (irregRemaining > 200) {
                     strokeColor = 'var(--accent)';
                     bgColor = 'var(--accent)';
-                    irregGreenPercentage = 100;
+                    irregFillPercentage = 100;
                 } else if (irregRemaining >= 100 && irregRemaining <= 200) {
                     strokeColor = 'var(--success)';
                     bgColor = 'var(--success)';
-                    irregGreenPercentage = 100;
+                    irregFillPercentage = 100;
                 } else if (irregRemaining < 100 && irregRemaining > 0) {
                     strokeColor = 'var(--success)';
                     bgColor = 'var(--warn)';
-                    irregGreenPercentage = irregRemaining;
+                    irregFillPercentage = (irregRemaining / 100) * 100;
                 } else {
-                    strokeColor = 'var(--warn)';
-                    bgColor = 'var(--warn)';
-                    irregGreenPercentage = 0;
+                    strokeColor = 'var(--danger)';
+                    bgColor = 'var(--danger)';
+                    irregFillPercentage = 0;
                 }
 
-                const irregStrokeDashoffset = circumference - (irregGreenPercentage / 100) * circumference;
+                const irregStrokeDashoffset = circumference - (irregFillPercentage / 100) * circumference;
 
                 html = `
                 <div class="quick-overview-item" style="border-color: var(--warn); background: rgba(255, 149, 0, 0.03);">
@@ -1278,8 +1312,8 @@
                     <svg class="status-circle-svg">
                         <circle cx="10" cy="10" r="${radius}" fill="transparent" stroke="${bgColor}" stroke-width="3"/>
                         <circle cx="10" cy="10" r="${radius}" fill="transparent" stroke="${strokeColor}" stroke-width="3"
-                            stroke-dasharray="${circumference}"
-                            stroke-dashoffset="${irregStrokeDashoffset}"/>
+                                stroke-dasharray="${circumference}"
+                                stroke-dashoffset="${irregStrokeDashoffset}"/>
                     </svg>
                 </div>` + html;
             }
@@ -1321,7 +1355,8 @@
             document.getElementById('total-usage-percent').textContent = `${overallPercent.toFixed(1)}% / ${totalTargetPercentConfigured.toFixed(0)}% (${grandAllocatedTotal.toFixed(2)} / ${netIncome.toFixed(2)} ${curSign})`;
             
             const pBar = document.getElementById('total-progress-bar');
-            let barWidthPercent = (overallPercent / totalTargetPercentConfigured) * 100;
+            
+            let barWidthPercent = netIncome > 0 ? (grandAllocatedTotal / netIncome) * 100 : 0;
             pBar.style.width = Math.min(barWidthPercent, 100) + '%';
             if(overallPercent > totalTargetPercentConfigured) pBar.classList.add('over'); else pBar.classList.remove('over');
 
@@ -1343,6 +1378,7 @@
         function renderCashPotsSection(netIncome, currentKey, curSign) {
             const mData = appState.months[currentKey];
             const potsContainer = document.getElementById('pots-container');
+            const lang = appState.config.lang || 'de';
             
             let unifiedPotsList = [];
             let irregularList = [];
@@ -1382,7 +1418,7 @@
                     totalIrregSpent += pSpent;
 
                     let freqLabel = item.freq === 'yearly' ? '1x Jährlich' : 'Quartal';
-                    let standingOrderText = item.isStandingOrder ? ' <span style="color:var(--success);">[Dauerauftrag aktiv]</span>' : '';
+                    let standingOrderText = item.isStandingOrder ? ' <span style="color:var(--success);">[Dauerauftrag active]</span>' : '';
                     
                     detailsHtml += `
                     <div style="font-size:0.8rem; background:rgba(0,0,0,0.01); padding:6px; border-radius:6px; margin-top:4px; border-left:2px solid var(--warn);">
@@ -1472,12 +1508,12 @@
                 }
                 
                 let remainingNetBalance = totalAvailable - spentSum;
-
                 let expensesRowsHtml = '';
+                
                 if (item.isStandingOrder) {
                     expensesRowsHtml = `
                     <div style="margin-top: 8px; padding: 8px; background: rgba(52, 199, 89, 0.08); border-radius:10px; font-size:0.9rem; border-left:4px solid var(--success);">
-                        🔄 <strong>Dauerauftrag active:</strong> Der Soll-Betrag von <span style="font-weight:bold;">${currentAllocation.toFixed(2)} ${curSign}</span> wurde für diesen Monat automatisch voll ausgeglichen.
+                        🔄 <strong>Dauerauftrag aktiv:</strong> Der Soll-Betrag von <span style="font-weight:bold;">${currentAllocation.toFixed(2)} ${curSign}</span> wurde für diesen Monat automatisch voll ausgeglichen.
                     </div>`;
                 } else {
                     (item.expenses || []).forEach(exp => {
@@ -1504,11 +1540,11 @@
                 <div class="card" style="border-top:3px solid var(--accent);">
                     <h4 style="font-weight:700; margin-bottom:6px;">${item.name || 'Unbenannt'}</h4>
                     <div style="font-size:0.85rem; color:var(--text-muted);">
-                        <div><span>${i18nDict['de'].pot_prev}</span>: <span style="float:right; font-weight:600; color:var(--text-main);">${prevCarry.toFixed(2)} ${curSign}</span></div>
-                        <div><span>${i18nDict['de'].pot_curr}</span>: <span style="float:right; font-weight:600; color:var(--text-main);">${currentAllocation.toFixed(2)} ${curSign}</span></div>
+                        <div><span>${i18nDict[lang].pot_prev}</span>: <span style="float:right; font-weight:600; color:var(--text-main);">${prevCarry.toFixed(2)} ${curSign}</span></div>
+                        <div><span>${i18nDict[lang].pot_curr}</span>: <span style="float:right; font-weight:600; color:var(--text-main);">${currentAllocation.toFixed(2)} ${curSign}</span></div>
                         <div style="border-top:1px dashed var(--border); margin:3px 0;"></div>
-                        <div style="font-weight:700; color:var(--text-main);"><span>${i18nDict['de'].pot_avail}</span>: <span style="float:right;">${totalAvailable.toFixed(2)} ${curSign}</span></div>
-                        <div><span>${i18nDict['de'].pot_spent}</span>: <span style="float:right; color:var(--danger);">${spentSum.toFixed(2)} ${curSign}</span></div>
+                        <div style="font-weight:700; color:var(--text-main);"><span>${i18nDict[lang].pot_avail}</span>: <span style="float:right;">${totalAvailable.toFixed(2)} ${curSign}</span></div>
+                        <div><span>${i18nDict[lang].pot_spent}</span>: <span style="float:right; color:var(--danger);">${spentSum.toFixed(2)} ${curSign}</span></div>
                     </div>
                     
                     ${expensesRowsHtml}
@@ -1516,7 +1552,7 @@
                     ${!item.isStandingOrder ? `
                     <div class="btn-action" style="padding:4px; margin-top:8px; font-size:0.8rem; border-radius:8px; background:var(--border); color:var(--text-main);"
                         onclick="addExpenseToPot('${type}', '${item.id}')">
-                        ${i18nDict['de'].add_expense}
+                        ${i18nDict[lang].add_expense}
                     </div>
                     ` : ''}
 
