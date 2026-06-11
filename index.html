@@ -1178,13 +1178,26 @@
                         const radius = 8;
                         const circumference = 2 * Math.PI * radius;
                         
+                        let strokeColor = 'var(--success)';
+                        let bgColor = 'var(--warn)';
                         let greenPercentage = 0;
-                        if (remaining >= 100) {
+
+                        if (remaining > 200) {
+                            strokeColor = 'var(--accent)'; // Blau bei über 200 Euro
+                            bgColor = 'var(--accent)';
                             greenPercentage = 100;
-                        } else if (remaining <= 0) {
-                            greenPercentage = 0;
+                        } else if (remaining >= 100 && remaining <= 200) {
+                            strokeColor = 'var(--success)'; // Grün zwischen 100 und 200 Euro
+                            bgColor = 'var(--success)';
+                            greenPercentage = 100;
+                        } else if (remaining < 100 && remaining > 0) {
+                            strokeColor = 'var(--success)'; // Dynamischer Verlauf unter 100 Euro
+                            bgColor = 'var(--warn)';        // Hintergrund wird Orange
+                            greenPercentage = remaining;    // Da Max 100 ist, entspricht Betrag gleich Prozent
                         } else {
-                            greenPercentage = remaining;
+                            strokeColor = 'var(--warn)';    // Komplett Orange im Minus
+                            bgColor = 'var(--warn)';
+                            greenPercentage = 0;
                         }
 
                         const strokeDashoffset = circumference - (greenPercentage / 100) * circumference;
@@ -1193,8 +1206,8 @@
                         <div class="quick-overview-item">
                             <span class="quick-overview-name">${item.name || 'Unbenannt'}</span>
                             <svg class="status-circle-svg">
-                                <circle cx="10" cy="10" r="${radius}" fill="transparent" stroke="var(--danger)" stroke-width="3"/>
-                                <circle cx="10" cy="10" r="${radius}" fill="transparent" stroke="var(--success)" stroke-width="3"
+                                <circle cx="10" cy="10" r="${radius}" fill="transparent" stroke="${bgColor}" stroke-width="3"/>
+                                <circle cx="10" cy="10" r="${radius}" fill="transparent" stroke="${strokeColor}" stroke-width="3"
                                     stroke-dasharray="${circumference}"
                                     stroke-dashoffset="${strokeDashoffset}"/>
                             </svg>
@@ -1211,27 +1224,40 @@
                 const radius = 8;
                 const circumference = 2 * Math.PI * radius;
                 
+                let strokeColor = 'var(--success)';
+                let bgColor = 'var(--warn)';
                 let irregGreenPercentage = 0;
-                if (irregRemaining >= 100) {
+
+                if (irregRemaining > 200) {
+                    strokeColor = 'var(--accent)';
+                    bgColor = 'var(--accent)';
                     irregGreenPercentage = 100;
-                } else if (irregRemaining <= 0) {
-                    irregGreenPercentage = 0;
-                } else {
+                } else if (irregRemaining >= 100 && irregRemaining <= 200) {
+                    strokeColor = 'var(--success)';
+                    bgColor = 'var(--success)';
+                    irregGreenPercentage = 100;
+                } else if (irregRemaining < 100 && irregRemaining > 0) {
+                    strokeColor = 'var(--success)';
+                    bgColor = 'var(--warn)';
                     irregGreenPercentage = irregRemaining;
+                } else {
+                    strokeColor = 'var(--warn)';
+                    bgColor = 'var(--warn)';
+                    irregGreenPercentage = 0;
                 }
 
                 const irregStrokeDashoffset = circumference - (irregGreenPercentage / 100) * circumference;
 
                 html = `
                 <div class="quick-overview-item" style="border-color: var(--warn); background: rgba(255, 149, 0, 0.03);">
-                    <span class="quick-overview-name" style="color: var(--warn); font-weight: 700;">Rücklagen für Jahresbeiträge und Quartalsbeiträge</span>
+                    <span class="quick-overview-name" style="color: var(--warn); font-weight: 700;">Rücklagen</span>
                     <svg class="status-circle-svg">
-                        <circle cx="10" cy="10" r="${radius}" fill="transparent" stroke="var(--danger)" stroke-width="3"/>
-                        <circle cx="10" cy="10" r="${radius}" fill="transparent" stroke="var(--success)" stroke-width="3"
+                        <circle cx="10" cy="10" r="${radius}" fill="transparent" stroke="${bgColor}" stroke-width="3"/>
+                        <circle cx="10" cy="10" r="${radius}" fill="transparent" stroke="${strokeColor}" stroke-width="3"
                             stroke-dasharray="${circumference}"
                             stroke-dashoffset="${irregStrokeDashoffset}"/>
                     </svg>
-                </div>` + html; // Wird ganz vorne angeheftet
+                </div>` + html;
             }
 
             if (validItemsCount === 0) {
