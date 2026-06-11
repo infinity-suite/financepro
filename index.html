@@ -628,10 +628,32 @@
             months: {}
         };
 
- // Ermittelt das aktuelle Datum beim Starten der App
-const today = new Date();
-let currentYear = today.getFullYear();
-let currentMonth = today.getMonth();
+// Ändere die Definitionen zu leeren Variablen:
+let currentYear;
+let currentMonth;
+let selectedQuickExpenseColor = '';
+
+window.addEventListener('DOMContentLoaded', () => {
+    loadStateFromLocalStorage();
+    applyLocalization();
+    
+    // Automatische Ermittlung des korrekten Abrechnungsmonats:
+    const heute = new Date(); // Nutzt das aktuelle Datum (z. B. 11.06.2026)
+    const startTag = appState.config.startDay || 1;
+    
+    if (heute.getDate() < startTag) {
+        // Wir sind vor dem Stichtag, also befinden wir uns im vorherigen Abrechnungsmonat
+        const vormonat = new Date(heute.getFullYear(), heute.getMonth() - 1, 1);
+        currentYear = vormonat.getFullYear();
+        currentMonth = vormonat.getMonth();
+    } else {
+        // Wir haben den Stichtag erreicht oder überschritten
+        currentYear = heute.getFullYear();
+        currentMonth = heute.getMonth();
+    }
+    
+    renderCurrentMonthView();
+});
         let selectedQuickExpenseColor = '';
 
         window.addEventListener('DOMContentLoaded', () => {
