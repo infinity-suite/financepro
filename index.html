@@ -843,16 +843,40 @@
             renderCurrentMonthView();
         }
 
-        function renderCurrentMonthView() {
+function renderCurrentMonthView() {
             const key = getMonthKey(currentYear, currentMonth);
             syncMonthData(key);
             
             const mData = appState.months[key];
-            const dateObj = new Date(currentYear, currentMonth, 1);
             
-            document.getElementById('current-month-label').textContent = 
-                dateObj.toLocaleDateString('de-DE', { month: 'long', year: 'numeric' });
+            // Berechne den genauen Abrechnungszeitraum basierend auf dem eingestellten Tag
+            const startDay = parseInt(appState.config.startDay) || 1;
+            let labelText = '';
+            
+            if (startDay === 1) {
+                // Wenn der Monat am 1. beginnt, bleibt es bei der Standardanzeige
+                const dateObj = new Date(currentYear, currentMonth, 1);
+                labelText = dateObj.toLocaleDateString('de-DE', { month: 'long', year: 'numeric' });
+            } else {
+                // Berechne das Start- und Enddatum des individuellen Abrechnungszeitraums
+                const startDate = new Date(currentYear, currentMonth, startDay);
+                
+                // Das Enddatum ist einen Tag vor dem Starttag des Folgemonats
+                const endDate = new Date(currentYear, currentMonth + 1, startDay - 1);
+                
+                const options = { day: '2-digit', month: '2-digit' };
+                const startStr = startDate.toLocaleDateString('de-DE', options);
+                const endStr = endDate.toLocaleDateString('de-DE', options);
+                
+                // Jahr des Zeitraums ermitteln (falls der Zeitraum über den Jahreswechsel geht)
+                const yearStr = startDate.getFullYear();
+                
+                labelText = `${startStr}. - ${endStr}. (${yearStr})`;
+            }
+            
+            document.getElementById('current-month-label').textContent = labelText;
 
+            // Der restliche Code der Funktion bleibt absolut identisch
             document.getElementById('in-salary').value = mData.salary;
             document.getElementById('in-bonus').value = mData.bonus;
             document.getElementById('in-deductions').value = mData.deductions;
