@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="icon" type="image/png" href="icon.png">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="icon" sizes="512x512" href="icon.png">
     <title>FinanzApp Pro</title>
     <style>
         * {
@@ -141,6 +144,41 @@
             width: 48%;
             font-weight: 600;
             text-align: center;
+        }
+
+        /* Neue Styles für das Dashboard oben */
+        .quick-overview-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 8px;
+        }
+        .quick-overview-item {
+            background: var(--bg-main);
+            padding: 6px 10px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid var(--border);
+        }
+        @media (prefers-color-scheme: dark) {
+            .quick-overview-item {
+                background: rgba(255, 255, 255, 0.02);
+            }
+        }
+        .quick-overview-name {
+            font-size: 0.85rem;
+            font-weight: 500;
+            max-width: 90px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .status-circle-svg {
+            transform: rotate(-90deg);
+            width: 20px;
+            height: 20px;
         }
 
         .view-section {
@@ -349,6 +387,12 @@
                 <div class="month-btn" onclick="changeMonth(-1)">◀</div>
                 <div class="month-display" id="current-month-label">Januar 2026</div>
                 <div class="month-btn" onclick="changeMonth(1)">▶</div>
+            </div>
+
+            <div class="card" id="quick-overview-section" style="margin-top: 12px; margin-bottom: 0; padding: 12px;">
+                <h4 style="font-size: 0.9rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Kurzübersicht</h4>
+                <div class="quick-overview-grid" id="quick-overview-container">
+                    </div>
             </div>
         </div>
 
@@ -1094,6 +1138,67 @@
             }
         }
 
+        /* Neue Rendering-Pipeline für das Dashboard oben */
+        function renderQuickOverview(key) {
+            const mData = appState.months[key];
+            const container = document.getElementById('quick-overview-container');
+            const section = document.getElementById('quick-overview-section');
+            
+            if (!mData) return;
+
+            let html = '';
+            let validItemsCount = 0;
+
+            ['fix', 'var', 'save'].forEach(type => {
+                (mData[type] || []).forEach(item => {
+                    // Daueraufträge herausfiltern
+                    if (item.isStandingOrder) return;
+
+                    validItemsCount++;
+
+                    const prevCarry = calculatePrevMonthCarryOver(item.id, key);
+                    const currentAllocation = getMonthlyProportionalValue(item.val, item.freq);
+                    const totalAvailable = prevCarry + currentAllocation;
+                    
+                    const spentSum = (item.expenses || []).reduce((sum, exp) => sum + cleanFloat(exp.amount), 0);
+                    const remaining = totalAvailable - spentSum;
+
+                    // Kreisberechnung (SVG Dasharray: Umfang = 2 * PI * r -> r=8 -> Umfang ~50.26)
+                    const radius = 8;
+                    const circumference = 2 * Math.PI * radius; // 50.265
+                    
+                    let greenPercentage = 0;
+                    if (remaining >= 100) {
+                        greenPercentage = 100;
+                    } else if (remaining <= 0) {
+                        greenPercentage = 0;
+                    } else {
+                        greenPercentage = remaining; // Weil Max-Grenze genau 100 ist, entspricht der Betrag direkt dem Prozentwert!
+                    }
+
+                    const strokeDashoffset = circumference - (greenPercentage / 100) * circumference;
+
+                    html += `
+                    <div class="quick-overview-item">
+                        <span class="quick-overview-name">${item.name || 'Unbenannt'}</span>
+                        <svg class="status-circle-svg">
+                            <circle cx="10" cy="10" r="${radius}" fill="transparent" stroke="var(--danger)" stroke-width="3"/>
+                            <circle cx="10" cy="10" r="${radius}" fill="transparent" stroke="var(--success)" stroke-width="3"
+                                stroke-dasharray="${circumference}"
+                                stroke-dashoffset="${strokeDashoffset}"/>
+                        </svg>
+                    </div>`;
+                });
+            });
+
+            if (validItemsCount === 0) {
+                section.style.display = 'none';
+            } else {
+                section.style.display = 'block';
+                container.innerHTML = html;
+            }
+        }
+
         function evaluateCalculationsPipeline() {
             const key = getMonthKey(currentYear, currentMonth);
             const mData = appState.months[key];
@@ -1137,6 +1242,9 @@
             });
             document.getElementById('irregular-costs-calc').textContent = 
                 `Rücklage für unregelmäßige Fixkosten: ${calculatedMonthlyIrregularStack.toFixed(2)} ${curSign} / Monat`;
+
+            // Aktualisiere die neue Kurzübersicht oben
+            renderQuickOverview(key);
 
             renderCashPotsSection(netIncome, key, curSign);
         }
@@ -1278,7 +1386,7 @@
                 if (item.isStandingOrder) {
                     expensesRowsHtml = `
                     <div style="margin-top: 8px; padding: 8px; background: rgba(52, 199, 89, 0.08); border-radius:10px; font-size:0.9rem; border-left:4px solid var(--success);">
-                        🔄 <strong>Dauerauftrag aktiv:</strong> Der Soll-Betrag von <span style="font-weight:bold;">${currentAllocation.toFixed(2)} ${curSign}</span> wurde für diesen Monat automatisch voll ausgeglichen.
+                        🔄 <strong>Dauerauftrag active:</strong> Der Soll-Betrag von <span style="font-weight:bold;">${currentAllocation.toFixed(2)} ${curSign}</span> wurde für diesen Monat automatisch voll ausgeglichen.
                     </div>`;
                 } else {
                     (item.expenses || []).forEach(exp => {
