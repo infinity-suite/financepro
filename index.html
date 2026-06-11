@@ -1138,7 +1138,7 @@
             }
         }
 
-        /* Neue Rendering-Pipeline für das Dashboard oben */
+/* Neue Rendering-Pipeline für das Dashboard oben */
         function renderQuickOverview(key) {
             const mData = appState.months[key];
             const container = document.getElementById('quick-overview-container');
@@ -1149,47 +1149,90 @@
             let html = '';
             let validItemsCount = 0;
 
+            // Variablen für die zusammengefassten Rücklagen (jährlich/quartalsweise)
+            let totalIrregAvailable = 0;
+            let totalIrregSpent = 0;
+            let hasIrregItems = false;
+
             ['fix', 'var', 'save'].forEach(type => {
                 (mData[type] || []).forEach(item => {
-                    // Daueraufträge herausfiltern
+                    // Daueraufträge komplett ignorieren
                     if (item.isStandingOrder) return;
-
-                    validItemsCount++;
 
                     const prevCarry = calculatePrevMonthCarryOver(item.id, key);
                     const currentAllocation = getMonthlyProportionalValue(item.val, item.freq);
                     const totalAvailable = prevCarry + currentAllocation;
-                    
                     const spentSum = (item.expenses || []).reduce((sum, exp) => sum + cleanFloat(exp.amount), 0);
-                    const remaining = totalAvailable - spentSum;
 
-                    // Kreisberechnung (SVG Dasharray: Umfang = 2 * PI * r -> r=8 -> Umfang ~50.26)
-                    const radius = 8;
-                    const circumference = 2 * Math.PI * radius; // 50.265
-                    
-                    let greenPercentage = 0;
-                    if (remaining >= 100) {
-                        greenPercentage = 100;
-                    } else if (remaining <= 0) {
-                        greenPercentage = 0;
+                    // Unterscheidung: Unregelmäßig vs. Monatlich
+                    if (item.freq === 'yearly' || item.freq === 'quarterly') {
+                        totalIrregAvailable += totalAvailable;
+                        totalIrregSpent += spentSum;
+                        hasIrregItems = true;
                     } else {
-                        greenPercentage = remaining; // Weil Max-Grenze genau 100 ist, entspricht der Betrag direkt dem Prozentwert!
+                        // Monatlicher Einzelposten
+                        validItemsCount++;
+                        const remaining = totalAvailable - spentSum;
+
+                        // Kreisberechnung
+                        const radius = 8;
+                        const circumference = 2 * Math.PI * radius;
+                        
+                        let greenPercentage = 0;
+                        if (remaining >= 100) {
+                            greenPercentage = 100;
+                        } else if (remaining <= 0) {
+                            greenPercentage = 0;
+                        } else {
+                            greenPercentage = remaining;
+                        }
+
+                        const strokeDashoffset = circumference - (greenPercentage / 100) * circumference;
+
+                        html += `
+                        <div class="quick-overview-item">
+                            <span class="quick-overview-name">${item.name || 'Unbenannt'}</span>
+                            <svg class="status-circle-svg">
+                                <circle cx="10" cy="10" r="${radius}" fill="transparent" stroke="var(--danger)" stroke-width="3"/>
+                                <circle cx="10" cy="10" r="${radius}" fill="transparent" stroke="var(--success)" stroke-width="3"
+                                    stroke-dasharray="${circumference}"
+                                    stroke-dashoffset="${strokeDashoffset}"/>
+                            </svg>
+                        </div>`;
                     }
-
-                    const strokeDashoffset = circumference - (greenPercentage / 100) * circumference;
-
-                    html += `
-                    <div class="quick-overview-item">
-                        <span class="quick-overview-name">${item.name || 'Unbenannt'}</span>
-                        <svg class="status-circle-svg">
-                            <circle cx="10" cy="10" r="${radius}" fill="transparent" stroke="var(--danger)" stroke-width="3"/>
-                            <circle cx="10" cy="10" r="${radius}" fill="transparent" stroke="var(--success)" stroke-width="3"
-                                stroke-dasharray="${circumference}"
-                                stroke-dashoffset="${strokeDashoffset}"/>
-                        </svg>
-                    </div>`;
                 });
             });
+
+            // Wenn es unregelmäßige Posten gab, fügen wir EINEN Sammelkreis hinzu
+            if (hasIrregItems) {
+                validItemsCount++;
+                const irregRemaining = totalIrregAvailable - totalIrregSpent;
+
+                const radius = 8;
+                const circumference = 2 * Math.PI * radius;
+                
+                let irregGreenPercentage = 0;
+                if (irregRemaining >= 100) {
+                    irregGreenPercentage = 100;
+                } else if (irregRemaining <= 0) {
+                    irregGreenPercentage = 0;
+                } else {
+                    irregGreenPercentage = irregRemaining;
+                }
+
+                const irregStrokeDashoffset = circumference - (irregGreenPercentage / 100) * circumference;
+
+                html = `
+                <div class="quick-overview-item" style="border-color: var(--warn); background: rgba(255, 149, 0, 0.03);">
+                    <span class="quick-overview-name" style="color: var(--warn); font-weight: 700;">Rücklagen für Jahresbeiträge und Quartalsbeiträge</span>
+                    <svg class="status-circle-svg">
+                        <circle cx="10" cy="10" r="${radius}" fill="transparent" stroke="var(--danger)" stroke-width="3"/>
+                        <circle cx="10" cy="10" r="${radius}" fill="transparent" stroke="var(--success)" stroke-width="3"
+                            stroke-dasharray="${circumference}"
+                            stroke-dashoffset="${irregStrokeDashoffset}"/>
+                    </svg>
+                </div>` + html; // Wird ganz vorne angeheftet
+            }
 
             if (validItemsCount === 0) {
                 section.style.display = 'none';
