@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="icon" type="image/png" href="https://github.com/infinity-suite/financepro/blob/31062c20e9d05e50d7e65255a21ff100b7d84428/icon.png?raw=true">
-    <link rel="apple-touch-icon" href="https://github.com/infinity-suite/financepro/blob/31062c20e9d05e50d7e65255a21ff100b7d84428/icon.png?raw=true">
-    <link rel="icon" sizes="512x512" href="https://github.com/infinity-suite/financepro/blob/31062c20e9d05e50d7e65255a21ff100b7d84428/icon.png?raw=true">
+<link rel="icon" type="image/png" href="https://github.com/infinity-suite/financepro/blob/31062c20e9d05e50d7e65255a21ff100b7d84428/icon.png?raw=true">
+<link rel="apple-touch-icon" href="https://github.com/infinity-suite/financepro/blob/31062c20e9d05e50d7e65255a21ff100b7d84428/icon.png?raw=true">
+<link rel="icon" sizes="512x512" href="https://github.com/infinity-suite/financepro/blob/31062c20e9d05e50d7e65255a21ff100b7d84428/icon.png?raw=true">
     <title>FinanzApp Pro</title>
     <style>
         * {
@@ -42,8 +42,8 @@
         }
 
         body {
-            --bg-main: #f2f2f7;
-            --bg-card: #ffffff;
+            --bg-main: #ffffff;
+            --bg-card: #f2f2f7;
             --text-main: #000000;
             --text-muted: #8e8e93;
             --accent: #007aff;
@@ -51,28 +51,10 @@
             --danger: #ff3b30;
             --success: #34c759;
             --warn: #ff9500;
-            --bg-input: rgba(120, 120, 128, 0.12);
 
             background-color: var(--bg-main);
             color: var(--text-main);
             display: block;
-        }
-
-        body.theme-blue { --accent: #007aff; }
-        body.theme-green { --accent: #34c759; }
-        body.theme-indigo { --accent: #5856d6; }
-        body.theme-orange { --accent: #ff9500; }
-        body.theme-pink { --accent: #ff2d55; }
-
-        @media (prefers-color-scheme: dark) {
-            body {
-                --bg-main: #000000;
-                --bg-card: #1c1c1e;
-                --text-main: #ffffff;
-                --text-muted: #aeaeae;
-                --border: #2c2c2e;
-                --bg-input: rgba(120, 120, 128, 0.24);
-            }
         }
 
         .app-container {
@@ -94,89 +76,95 @@
             display: none;
         }
 
+        body.theme-blue { --accent: #007aff; }
+        body.theme-green { --accent: #34c759; }
+        body.theme-indigo { --accent: #5856d6; }
+        body.theme-orange { --accent: #ff9500; }
+        body.theme-pink { --accent: #ff2d55; }
+
+        @media (prefers-color-scheme: dark) {
+            body {
+                --bg-main: #1c1c1e;
+                --bg-card: #2c2c2e;
+                --text-main: #ffffff;
+                --text-muted: #aeaeae;
+                --border: #38383a;
+            }
+        }
+
         .header {
             display: block;
             width: 100%;
-            margin-bottom: 16px;
-            padding-top: 8px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 12px;
         }
         .header-row {
             display: block;
             width: 100%;
             clear: both;
-            margin-bottom: 14px;
+            margin-bottom: 8px;
         }
         .header-title {
-            font-size: 1.6rem;
+            font-size: 1.5rem;
             font-weight: 700;
             float: left;
-            letter-spacing: -0.5px;
         }
         .header-menu-btn {
             float: right;
             background: var(--bg-card);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.9rem;
+            padding: 6px 14px;
+            border-radius: 12px;
             font-weight: 600;
             cursor: pointer;
             color: var(--accent);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
         .clear-float {
             clear: both;
         }
 
         .month-selector {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            display: block;
+            text-align: center;
             margin: 12px 0;
             background: var(--bg-card);
-            border-radius: 12px;
-            padding: 4px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border-radius: 14px;
+            padding: 8px;
         }
         .month-btn {
-            padding: 10px 20px;
+            display: inline-block;
+            width: 25%;
             font-weight: bold;
             color: var(--accent);
             cursor: pointer;
-            user-select: none;
+            text-align: center;
         }
         .month-display {
+            display: inline-block;
+            width: 48%;
             font-weight: 600;
-            font-size: 1.05rem;
-        }
-
-        .card {
-            background: var(--bg-card);
-            border-radius: 14px;
-            padding: 16px;
-            margin-bottom: 16px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-        }
-        .card-title-sub {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 12px;
+            text-align: center;
         }
 
         .quick-overview-grid {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 12px;
+            margin-top: 8px;
         }
         .quick-overview-item {
             background: var(--bg-main);
-            padding: 8px 12px;
+            padding: 6px 10px;
             border-radius: 10px;
             display: flex;
             align-items: center;
             gap: 8px;
+            border: 1px solid var(--border);
+        }
+        @media (prefers-color-scheme: dark) {
+            .quick-overview-item {
+                background: rgba(255, 255, 255, 0.02);
+            }
         }
         .quick-overview-name {
             font-size: 0.85rem;
@@ -188,86 +176,61 @@
         }
         .status-circle-svg {
             transform: rotate(-90deg);
-            width: 18px;
-            height: 18px;
-        }
-
-        .missing-color-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px;
-            background: var(--bg-main);
-            border-radius: 10px;
-            font-size: 0.9rem;
-        }
-        .tag-marker {
-            display: inline-block;
-            width: 22px;
-            height: 22px;
-            border-radius: 50%;
-            cursor: pointer;
-            border: 2px solid transparent;
-            transition: transform 0.1s ease;
-        }
-        .tag-marker:active {
-            transform: scale(0.9);
+            width: 20px;
+            height: 20px;
         }
 
         .view-section {
             display: block;
+            margin-bottom: 24px;
         }
         .section-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin: 8px 0 12px 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 12px;
             color: var(--text-main);
-            letter-spacing: -0.3px;
+        }
+        .card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 12px;
         }
 
         .row-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
             border-bottom: 1px solid var(--border);
         }
         .row-item:last-child {
             border-bottom: none;
+            margin-bottom: 0;
             padding-bottom: 0;
-        }
-        .card .row-item:first-child {
-            padding-top: 0;
         }
 
         .lbl {
+            display: inline-block;
+            width: 40%;
             color: var(--text-muted);
-            font-size: 0.95rem;
+            vertical-align: middle;
         }
         .val {
-            font-weight: 500;
+            display: inline-block;
+            width: 58%;
             text-align: right;
+            vertical-align: middle;
         }
         .val input, .val select {
+            width: 100%;
             text-align: right;
-            background: var(--bg-input);
-            border-radius: 8px;
-            padding: 6px 10px;
-            font-weight: 600;
+            background: rgba(0,0,0,0.03);
+            border-radius: 6px;
+            padding: 4px 8px;
         }
-
-        .item-nested-list {
-            border-left: 2px solid var(--border);
-            padding-left: 12px;
-            margin: 12px 0;
-        }
-        .nested-row {
-            padding: 8px 0;
-            border-bottom: 1px dashed var(--border);
-        }
-        .nested-row:last-child {
-            border-bottom: none;
-            padding-bottom: 0;
+        @media (prefers-color-scheme: dark) {
+            .val input, .val select { background: rgba(255,255,255,0.05); }
         }
 
         .btn-action {
@@ -277,29 +240,21 @@
             color: white;
             text-align: center;
             padding: 12px;
-            border-radius: 12px;
+            border-radius: 14px;
             font-weight: 600;
-            margin-top: 14px;
+            margin-top: 10px;
             cursor: pointer;
-            transition: opacity 0.1s ease;
-        }
-        .btn-action:active {
-            opacity: 0.8;
         }
         .btn-danger {
             background: var(--danger);
-        }
-        .btn-secondary {
-            background: var(--bg-input);
-            color: var(--accent);
         }
 
         .progress-container {
             width: 100%;
             background: var(--border);
-            border-radius: 6px;
-            height: 8px;
-            margin-top: 12px;
+            border-radius: 8px;
+            height: 12px;
+            margin-top: 8px;
             overflow: hidden;
         }
         .progress-bar {
@@ -330,41 +285,53 @@
 
         .theme-dot {
             display: inline-block;
-            width: 36px;
-            height: 36px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
-            margin: 8px;
+            margin: 6px;
             cursor: pointer;
-            border: 3px solid transparent;
+            border: 2px solid transparent;
         }
         .theme-dot.selected {
             border-color: var(--text-main);
         }
 
+        .tag-marker {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            border-radius: 4px;
+            margin-left: 4px;
+            cursor: pointer;
+            border: 1px solid var(--border);
+        }
+
         .color-selector-row {
             display: flex;
             gap: 8px;
+            margin-top: 6px;
+        }
+        .color-option {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        .color-option.selected {
+            border-color: var(--text-main);
         }
 
         .standing-order-container {
-            margin-top: 8px;
+            margin-top: 6px;
             font-size: 0.85rem;
             color: var(--text-muted);
-            background: var(--bg-main);
-            padding: 8px;
+            background: rgba(0,0,0,0.02);
+            padding: 6px;
             border-radius: 8px;
-            display: flex;
-            align-items: center;
         }
-
-        .expense-log-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-top: 8px;
-            padding: 8px;
-            background: var(--bg-main);
-            border-radius: 10px;
+        @media (prefers-color-scheme: dark) {
+            .standing-order-container { background: rgba(255,255,255,0.03); }
         }
 
 .fab {
@@ -394,10 +361,10 @@
 
         @media (min-width: 768px) {
             .view-split {
-                width: 49%;
+                width: 48%;
                 display: inline-block;
                 vertical-align: top;
-                margin-right: 1%;
+                margin-right: 2%;
             }
             .view-split:last-of-type {
                 margin-right: 0;
@@ -421,26 +388,28 @@
                 <div class="month-btn" onclick="changeMonth(1)">▶</div>
             </div>
 
-            <div class="card" id="quick-overview-section" style="display: none;">
-                <div class="card-title-sub">Kurzübersicht Töpfe</div>
-                <div class="quick-overview-grid" id="quick-overview-container"></div>
+            <div class="card" id="quick-overview-section" style="margin-top: 12px; margin-bottom: 0; padding: 12px;">
+                <h4 style="font-size: 0.9rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Kurzübersicht</h4>
+                <div class="quick-overview-grid" id="quick-overview-container">
+                    </div>
             </div>
 
-            <div class="card" id="missing-color-section" style="display: none;">
-                <div class="card-title-sub" style="color: var(--warn);">Unkategorisierte Ausgaben (Direkt färben)</div>
+            <!-- Interaktiver Bereich für unkategorisierte Ausgaben direkt oben -->
+            <div class="card" id="missing-color-section" style="margin-top: 12px; margin-bottom: 0; padding: 12px; border-left: 5px solid #ff9500; display: none;">
+                <h4 style="font-size: 0.9rem; font-weight: 700; color: #ff9500; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Unkategorisierte Ausgaben (Hier direkt färben)</h4>
                 <div id="missing-color-container" style="display: flex; flex-direction: column; gap: 8px;"></div>
             </div>
         </div>
 
-        <div class="card">
+        <div class="card" style="border-left: 5px solid var(--accent);">
             <div class="row-item">
-                <span class="lbl" style="font-weight:600; color:var(--text-main);" data-i18n="total_budget_status">Budget Auslastung</span>
+                <span class="lbl" data-i18n="total_budget_status">Budget Auslastung</span>
                 <span class="val" id="total-usage-percent">0% / 100%</span>
             </div>
             <div class="progress-container">
                 <div id="total-progress-bar" class="progress-bar"></div>
             </div>
-            <div style="margin-top:12px; font-size:0.85rem; color:var(--text-muted); text-align: center;" id="irregular-costs-calc"></div>
+            <div style="margin-top:10px; font-size:0.9rem; color:var(--text-muted);" id="irregular-costs-calc"></div>
         </div>
 
         <div class="view-section">
@@ -448,7 +417,7 @@
                 <div class="section-title" data-i18n="sec_allocation">1. Budget-Zuweisung</div>
                 
                 <div class="card">
-                    <div class="card-title-sub" style="color: var(--success);" data-i18n="incomes">Einnahmen</div>
+                    <h3 style="margin-bottom:8px; color:var(--success);" data-i18n="incomes">Einnahmen</h3>
                     <div class="row-item">
                         <span class="lbl" data-i18n="base_salary">Gehalt (Standard)</span>
                         <span class="val"><input type="text" inputmode="decimal" pattern="[0-9.,]*" id="in-salary" onchange="updateCoreData()" value="2000"></span>
@@ -461,14 +430,14 @@
                         <span class="lbl" data-i18n="deductions">Abzüge / Steuern</span>
                         <span class="val"><input type="text" inputmode="decimal" pattern="[0-9.,]*" id="in-deductions" onchange="updateCoreData()" value="0"></span>
                     </div>
-                    <div class="row-item" style="font-weight:bold; border-top: 1px solid var(--border); margin-top: 4px;">
-                        <span class="lbl" style="color:var(--text-main);" data-i18n="net_total">Gesamt Einnahmen</span>
+                    <div class="row-item" style="font-weight:bold;">
+                        <span class="lbl" data-i18n="net_total">Gesamt Einnahmen</span>
                         <span class="val" id="lbl-net-income">0.00</span>
                     </div>
                 </div>
 
                 <div class="card">
-                    <div class="card-title-sub" style="color: var(--danger);" data-i18n="fix_costs">Fixkosten</div>
+                    <h3 style="margin-bottom:8px; color:var(--danger);" data-i18n="fix_costs">Fixkosten</h3>
                     <div class="row-item">
                         <span class="lbl" data-i18n="target_pct">Zielansatz %</span>
                         <span class="val"><input type="text" inputmode="decimal" pattern="[0-9.,]*" id="fix-pct" onchange="updateCoreData()" value="50"></span>
@@ -477,12 +446,12 @@
                         <span class="lbl" data-i18n="effective_status">Ist-Wert</span>
                         <span class="val" id="lbl-fix-status">0.00 / 0%</span>
                     </div>
-                    <div id="fix-items-container" class="item-nested-list"></div>
-                    <div class="btn-action btn-secondary" style="padding: 8px; font-size: 0.85rem;" onclick="addCategoryItem('fix')" data-i18n="add_item">+ Posten hinzufügen</div>
+                    <div id="fix-items-container"></div>
+                    <div class="btn-action" style="padding: 6px; font-size: 0.9rem;" onclick="addCategoryItem('fix')" data-i18n="add_item">+ Posten hinzufügen</div>
                 </div>
 
                 <div class="card">
-                    <div class="card-title-sub" style="color: var(--warn);" data-i18n="var_costs">Variable Kosten</div>
+                    <h3 style="margin-bottom:8px; color:var(--warn);" data-i18n="var_costs">Variable Kosten</h3>
                     <div class="row-item">
                         <span class="lbl" data-i18n="target_pct">Zielansatz %</span>
                         <span class="val"><input type="text" inputmode="decimal" pattern="[0-9.,]*" id="var-pct" onchange="updateCoreData()" value="30"></span>
@@ -491,12 +460,12 @@
                         <span class="lbl" data-i18n="effective_status">Ist-Wert</span>
                         <span class="val" id="lbl-var-status">0.00 / 0%</span>
                     </div>
-                    <div id="var-items-container" class="item-nested-list"></div>
-                    <div class="btn-action btn-secondary" style="padding: 8px; font-size: 0.85rem;" onclick="addCategoryItem('var')" data-i18n="add_item">+ Posten hinzufügen</div>
+                    <div id="var-items-container"></div>
+                    <div class="btn-action" style="padding: 6px; font-size: 0.9rem;" onclick="addCategoryItem('var')" data-i18n="add_item">+ Posten hinzufügen</div>
                 </div>
 
                 <div class="card">
-                    <div class="card-title-sub" style="color: var(--accent);" data-i18n="savings">Sparen</div>
+                    <h3 style="margin-bottom:8px; color:var(--accent);" data-i18n="savings">Sparen</h3>
                     <div class="row-item">
                         <span class="lbl" data-i18n="target_pct">Zielansatz %</span>
                         <span class="val"><input type="text" inputmode="decimal" pattern="[0-9.,]*" id="save-pct" onchange="updateCoreData()" value="20"></span>
@@ -505,13 +474,13 @@
                         <span class="lbl" data-i18n="effective_status">Ist-Wert</span>
                         <span class="val" id="lbl-save-status">0.00 / 0%</span>
                     </div>
-                    <div id="save-items-container" class="item-nested-list"></div>
-                    <div class="btn-action btn-secondary" style="padding: 8px; font-size: 0.85rem;" onclick="addCategoryItem('save')" data-i18n="add_item">+ Posten hinzufügen</div>
+                    <div id="save-items-container"></div>
+                    <div class="btn-action" style="padding: 6px; font-size: 0.9rem;" onclick="addCategoryItem('save')" data-i18n="add_item">+ Posten hinzufügen</div>
                 </div>
             </div>
 
             <div class="view-split">
-                <div class="section-title" data-i18n="sec_pots">2. Verknüpfte Spartöpfe</div>
+                <div class="section-title" data-i18n="sec_pots">2. Verknüpfte Spartöpfe / Konten</div>
                 <div id="pots-container"></div>
             </div>
         </div>
@@ -530,35 +499,35 @@
             <div class="row-item">
                 <span class="lbl">Posten wählen</span>
                 <span class="val">
-                    <select id="quick-target-post" style="width: 100%; text-align: left; direction: ltr;">
-                    </select>
+                    <select id="quick-target-post" style="background: rgba(0,0,0,0.03); padding: 6px; border-radius: 6px; width: 100%; text-align: left; direction: ltr;">
+                        </select>
                 </span>
             </div>
 
             <div class="row-item">
                 <span class="lbl">Betrag</span>
-                <span class="val"><input type="text" inputmode="decimal" pattern="[0-9.,]*" id="quick-amount" placeholder="0.00"></span>
+                <span class="val"><input type="text" inputmode="decimal" pattern="[0-9.,]*" id="quick-amount" placeholder="0.00" style="background: rgba(0,0,0,0.03); padding: 6px; border-radius: 6px;"></span>
             </div>
 
             <div class="row-item">
                 <span class="lbl">Notiz / Zweck</span>
-                <span class="val"><input type="text" id="quick-note" placeholder="z.B. REWE, Tanken..."></span>
+                <span class="val"><input type="text" id="quick-note" placeholder="z.B. REWE, Tanken..." style="background: rgba(0,0,0,0.03); padding: 6px; border-radius: 6px;"></span>
             </div>
 
             <div class="row-item">
                 <span class="lbl">Farbkategorie</span>
                 <div class="val">
                     <div class="color-selector-row" style="justify-content: flex-end;">
-                        <div class="tag-marker" style="background:#e5e5ea;" onclick="selectQuickColor(this, '')"></div>
-                        <div class="tag-marker" style="background:#ff3b30;" onclick="selectQuickColor(this, '#ff3b30')"></div>
-                        <div class="tag-marker" style="background:#ff9500;" onclick="selectQuickColor(this, '#ff9500')"></div>
-                        <div class="tag-marker" style="background:#34c759;" onclick="selectQuickColor(this, '#34c759')"></div>
-                        <div class="tag-marker" style="background:#007aff;" onclick="selectQuickColor(this, '#007aff')"></div>
+                        <div class="color-option" style="background:#e5e5ea;" onclick="selectQuickColor(this, '')"></div>
+                        <div class="color-option" style="background:#ff3b30;" onclick="selectQuickColor(this, '#ff3b30')"></div>
+                        <div class="color-option" style="background:#ff9500;" onclick="selectQuickColor(this, '#ff9500')"></div>
+                        <div class="color-option" style="background:#34c759;" onclick="selectQuickColor(this, '#34c759')"></div>
+                        <div class="color-option" style="background:#007aff;" onclick="selectQuickColor(this, '#007aff')"></div>
                     </div>
                 </div>
             </div>
 
-            <div class="btn-action" style="margin-top: 24px;" onclick="submitQuickExpense()">Ausgabe buchen</div>
+            <div class="btn-action" style="margin-top: 20px;" onclick="submitQuickExpense()">Ausgabe buchen</div>
         </div>
     </div>
 
@@ -570,7 +539,7 @@
         </div>
 
         <div class="card">
-            <div class="card-title-sub" data-i18n="general_config">Allgemeine Konfiguration</div>
+            <h3 style="margin-bottom:12px;" data-i18n="general_config">Allgemeine Konfiguration</h3>
             <div class="row-item">
                 <span class="lbl" data-i18n="currency">Währung</span>
                 <span class="val">
@@ -589,7 +558,7 @@
         </div>
 
         <div class="card">
-            <div class="card-title-sub" data-i18n="choose_theme">Farbschema wählen</div>
+            <h3 style="margin-bottom:12px;" data-i18n="choose_theme">Farbschema / Theme wählen</h3>
             <div style="text-align:center;">
                 <div class="theme-dot theme-blue" style="background:#007aff;" onclick="setAppTheme('blue')"></div>
                 <div class="theme-dot theme-green" style="background:#34c759;" onclick="setAppTheme('green')"></div>
@@ -600,16 +569,16 @@
         </div>
 
         <div class="card">
-            <div class="card-title-sub" data-i18n="backup_system">Backup & Datenverwaltung</div>
-            <div class="btn-action btn-secondary" onclick="copyToClipboard()" data-i18n="btn_copy">Daten kopieren</div>
-            <div class="btn-action btn-secondary" onclick="saveDataToFile()" data-i18n="btn_save_pc">Als .json sichern</div>
+            <h3 style="margin-bottom:12px;" data-i18n="backup_system">Backup & Datenverwaltung</h3>
+            <div class="btn-action" onclick="copyToClipboard()" data-i18n="btn_copy">Daten in Zwischenablage kopieren</div>
+            <div class="btn-action" onclick="saveDataToFile()" data-i18n="btn_save_pc">Auf PC speichern (.json)</div>
             
-            <div style="margin-top:20px; border-top:1px solid var(--border); padding-top:16px;">
-                <textarea id="txt-import-box" style="width:100%; height:60px; background:var(--bg-main); border-radius:10px; padding:8px; font-size:0.85rem; border:1px solid var(--border);" placeholder="Backup-String hier einfügen..."></textarea>
-                <div class="btn-action btn-secondary" style="color:var(--warn);" onclick="importFromText()" data-i18n="btn_import">Backup einspielen</div>
+            <div style="margin-top:15px; border-top:1px solid var(--border); padding-top:15px;">
+                <textarea id="txt-import-box" style="width:100%; height:60px; background:var(--border); border-radius:8px; padding:6px; font-size:0.85rem;" placeholder="Backup-String hier einfügen..."></textarea>
+                <div class="btn-action" style="background:var(--warn);" onclick="importFromText()" data-i18n="btn_import">Backup einspielen</div>
             </div>
 
-            <div class="btn-action btn-danger" style="margin-top:24px;" onclick="wipeAllAppData()" data-i18n="btn_wipe">Alle App-Daten löschen</div>
+            <div class="btn-action btn-danger" style="margin-top:30px;" onclick="wipeAllAppData()" data-i18n="btn_wipe">Alle App-Daten unwiderruflich löschen</div>
         </div>
     </div>
 
@@ -621,12 +590,12 @@
                 settings: "Einstellungen",
                 close: "Schließen",
                 total_budget_status: "Zugeordnetes Gesamtbudget",
-                sec_allocation: "1. Budget-Zuweisung",
+                sec_allocation: "1. Feste & Variable Budgetposten",
                 sec_pots: "2. Verknüpfte Spartöpfe (Ist-Ausgaben)",
                 incomes: "Monatliche Einnahmen",
                 base_salary: "Grundgehalt / Feste Eingänge",
                 bonus: "Einmalige Boni / Zusätze",
-                deductions: "Abzüge / Steuern",
+                deductions: "Abzüge / Einbehaltungen",
                 net_total: "Netto Gesamtbudget",
                 fix_costs: "Fixkosten Belastung",
                 var_costs: "Variable Budgetposten",
@@ -677,7 +646,7 @@
             const startTag = parseInt(appState.config.startDay) || 1;
             
             if (heute.getDate() < startTag) {
-                const vormonat = new Date(heude.getFullYear(), heute.getMonth() - 1, 1);
+                const vormonat = new Date(heute.getFullYear(), heute.getMonth() - 1, 1);
                 currentYear = vormonat.getFullYear();
                 currentMonth = vormonat.getMonth();
             } else {
@@ -1089,25 +1058,24 @@
             let html = '';
             items.forEach(item => {
                 html += `
-                <div class="nested-row">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;">
-                        <input type="text" value="${item.name || ''}" style="width:55%; font-weight:600; text-align:left;" 
+                <div class="row-item" style="border-left: 3px solid var(--text-muted); padding-left:8px; margin-top:8px;">
+                    <div style="margin-bottom: 4px;">
+                        <input type="text" value="${item.name || ''}" style="width:55%; font-weight:600; text-align:left; background:rgba(0,0,0,0.02);" 
                             onchange="updateItemField('${type}', '${item.id}', 'name', this.value)">
-                        <div>
-                            <input type="text" inputmode="decimal" pattern="[0-9.,]*" value="${item.val || 0}" style="width:70px; text-align:right; font-weight:600;" 
-                                onchange="updateItemField('${type}', '${item.id}', 'val', this.value)"> <span style="font-weight:600;">${curSign}</span>
-                        </div>
+                        <input type="text" inputmode="decimal" pattern="[0-9.,]*" value="${item.val || 0}" style="width:35%; text-align:right; font-weight:600;" 
+                            onchange="updateItemField('${type}', '${item.id}', 'val', this.value)"> ${curSign}
                     </div>
-                    <div style="font-size:0.85rem; color:var(--text-muted); display:flex; justify-content:space-between; align-items:center;">
-                        <select style="background:transparent; color:var(--accent); font-weight:500;" onchange="updateItemField('${type}', '${item.id}', 'freq', this.value)">
+                    <div style="font-size:0.85rem; color:var(--text-muted);">
+                        <select style="width:45%; background:transparent;" onchange="updateItemField('${type}', '${item.id}', 'freq', this.value)">
                             <option value="monthly" ${item.freq === 'monthly' ? 'selected' : ''}>${i18nDict[lang].freq_monthly}</option>
                             <option value="yearly" ${item.freq === 'yearly' ? 'selected' : ''}>${i18nDict[lang].freq_yearly}</option>
                             <option value="quarterly" ${item.freq === 'quarterly' ? 'selected' : ''}>${i18nDict[lang].freq_quarterly}</option>
                         </select>
-                        <span style="color:var(--danger); cursor:pointer; font-weight:500; font-size:0.85rem;" onclick="removeCategoryItem('${type}', '${item.id}')">Entfernen</span>
+                        <span style="color:var(--danger); float:right; cursor:pointer; font-weight:bold;" onclick="removeCategoryItem('${type}', '${item.id}')">✕</span>
+                        <div style="clear:both;"></div>
                     </div>
                     <div class="standing-order-container">
-                        <label style="cursor:pointer; display:flex; align-items:center; gap:6px; width:100%;">
+                        <label style="cursor:pointer; display:block; width:100%;">
                             <input type="checkbox" ${item.isStandingOrder ? 'checked' : ''} onchange="updateItemField('${type}', '${item.id}', 'isStandingOrder', this.checked)">
                             🔄 Als Dauerauftrag buchen
                         </label>
@@ -1157,8 +1125,8 @@
         }
 
         function selectQuickColor(element, colorHex) {
-            document.querySelectorAll('.tag-marker').forEach(el => el.style.borderColor = 'transparent');
-            element.style.borderColor = 'var(--text-main)';
+            document.querySelectorAll('.color-option').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
             selectedQuickExpenseColor = colorHex;
         }
 
@@ -1221,19 +1189,20 @@
                     (item.expenses || []).forEach(exp => {
                         if (!exp.color || exp.color === '' || exp.color === 'transparent' || exp.color === '#ccc' || exp.color === '#e5e5ea') {
                             colorCount++;
-                            const noteText = exp.note ? ` • <span style="color: var(--text-muted);">${exp.note}</span>` : '';
+                            const noteText = exp.note ? ` - <span style="font-style: italic; color: var(--text-muted);">${exp.note}</span>` : '';
                             
                             colorHtml += `
-                                <div class="missing-color-item">
+                                <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: rgba(0,0,0,0.02); border-radius: 10px; font-size: 0.9rem; border-left: 3px solid #ff9500;">
                                     <div>
-                                        <span style="font-weight: 600;">${item.name || 'Posten'}</span>${noteText}
+                                        <span style="font-weight: 600; color: var(--text-main);">${item.name || 'Posten'}</span>
+                                        ${noteText}
                                         <div style="font-weight: 700; color: var(--danger); margin-top: 2px;">${cleanFloat(exp.amount).toFixed(2)} ${appState.config.currency || '€'}</div>
                                     </div>
-                                    <div style="display: flex; gap: 6px;">
-                                        <span class="tag-marker" style="background:#ff3b30;" onclick="setExpenseColor('${type}', '${item.id}', '${exp.id}', '#ff3b30')"></span>
-                                        <span class="tag-marker" style="background:#ff9500;" onclick="setExpenseColor('${type}', '${item.id}', '${exp.id}', '#ff9500')"></span>
-                                        <span class="tag-marker" style="background:#34c759;" onclick="setExpenseColor('${type}', '${item.id}', '${exp.id}', '#34c759')"></span>
-                                        <span class="tag-marker" style="background:#007aff;" onclick="setExpenseColor('${type}', '${item.id}', '${exp.id}', '#007aff')"></span>
+                                    <div style="display: flex; align-items: center; gap: 6px;">
+                                        <span class="tag-marker" style="background:#ff3b30; width:22px; height:22px; margin:0;" onclick="setExpenseColor('${type}', '${item.id}', '${exp.id}', '#ff3b30')"></span>
+                                        <span class="tag-marker" style="background:#ff9500; width:22px; height:22px; margin:0;" onclick="setExpenseColor('${type}', '${item.id}', '${exp.id}', '#ff9500')"></span>
+                                        <span class="tag-marker" style="background:#34c759; width:22px; height:22px; margin:0;" onclick="setExpenseColor('${type}', '${item.id}', '${exp.id}', '#34c759')"></span>
+                                        <span class="tag-marker" style="background:#007aff; width:22px; height:22px; margin:0;" onclick="setExpenseColor('${type}', '${item.id}', '${exp.id}', '#007aff')"></span>
                                     </div>
                                 </div>
                             `;
@@ -1266,7 +1235,7 @@
                         validItemsCount++;
                         const remaining = totalAvailable - spentSum;
                         
-                        const radius = 7;
+                        const radius = 8;
                         const circumference = 2 * Math.PI * radius;
                         
                         let strokeColor = 'var(--success)';
@@ -1297,8 +1266,8 @@
                         <div class="quick-overview-item">
                             <span class="quick-overview-name">${item.name || 'Unbenannt'}</span>
                             <svg class="status-circle-svg">
-                                <circle cx="9" cy="9" r="${radius}" fill="transparent" stroke="${bgColor}" stroke-width="2.5"/>
-                                <circle cx="9" cy="9" r="${radius}" fill="transparent" stroke="${strokeColor}" stroke-width="2.5"
+                                <circle cx="10" cy="10" r="${radius}" fill="transparent" stroke="${bgColor}" stroke-width="3"/>
+                                <circle cx="10" cy="10" r="${radius}" fill="transparent" stroke="${strokeColor}" stroke-width="3"
                                     stroke-dasharray="${circumference}"
                                     stroke-dashoffset="${strokeDashoffset}"/>
                             </svg>
@@ -1311,7 +1280,7 @@
                 validItemsCount++;
                 const irregRemaining = totalIrregAvailable - totalIrregSpent;
                 
-                const radius = 7;
+                const radius = 8;
                 const circumference = 2 * Math.PI * radius;
                 
                 let strokeColor = 'var(--success)';
@@ -1339,11 +1308,11 @@
                 const irregStrokeDashoffset = circumference - (irregFillPercentage / 100) * circumference;
 
                 html = `
-                <div class="quick-overview-item" style="background: rgba(255, 149, 0, 0.1);">
-                    <span class="quick-overview-name" style="color: var(--warn); font-weight: 600;">Rücklagen</span>
+                <div class="quick-overview-item" style="border-color: var(--warn); background: rgba(255, 149, 0, 0.03);">
+                    <span class="quick-overview-name" style="color: var(--warn); font-weight: 700;">Rücklagen</span>
                     <svg class="status-circle-svg">
-                        <circle cx="9" cy="9" r="${radius}" fill="transparent" stroke="${bgColor}" stroke-width="2.5"/>
-                        <circle cx="9" cy="9" r="${radius}" fill="transparent" stroke="${strokeColor}" stroke-width="2.5"
+                        <circle cx="10" cy="10" r="${radius}" fill="transparent" stroke="${bgColor}" stroke-width="3"/>
+                        <circle cx="10" cy="10" r="${radius}" fill="transparent" stroke="${strokeColor}" stroke-width="3"
                                 stroke-dasharray="${circumference}"
                                 stroke-dashoffset="${irregStrokeDashoffset}"/>
                     </svg>
@@ -1374,9 +1343,9 @@
             let varPctReal = netIncome > 0 ? (varSum / netIncome) * 100 : 0;
             let savePctReal = netIncome > 0 ? (saveSum / netIncome) * 100 : 0;
 
-            document.getElementById('lbl-fix-status').textContent = `${fixSum.toFixed(2)} ${curSign} (${fixPctReal.toFixed(1)}%)`;
-            document.getElementById('lbl-var-status').textContent = `${varSum.toFixed(2)} ${curSign} (${varPctReal.toFixed(1)}%)`;
-            document.getElementById('lbl-save-status').textContent = `${saveSum.toFixed(2)} ${curSign} (${savePctReal.toFixed(1)}%)`;
+            document.getElementById('lbl-fix-status').textContent = `${fixSum.toFixed(2)} ${curSign} / ${fixPctReal.toFixed(1)}%`;
+            document.getElementById('lbl-var-status').textContent = `${varSum.toFixed(2)} ${curSign} / ${varPctReal.toFixed(1)}%`;
+            document.getElementById('lbl-save-status').textContent = `${saveSum.toFixed(2)} ${curSign} / ${savePctReal.toFixed(1)}%`;
 
             let totalTargetPercentConfigured = mData.fixPctTarget + mData.varPctTarget + mData.savePctTarget;
             if(totalTargetPercentConfigured <= 0) totalTargetPercentConfigured = 100;
@@ -1384,7 +1353,7 @@
             let grandAllocatedTotal = fixSum + varSum + saveSum;
             let overallPercent = netIncome > 0 ? (grandAllocatedTotal / netIncome) * 100 : 0;
             
-            document.getElementById('total-usage-percent').textContent = `${overallPercent.toFixed(1)}% / ${totalTargetPercentConfigured.toFixed(0)}%`;
+            document.getElementById('total-usage-percent').textContent = `${overallPercent.toFixed(1)}% / ${totalTargetPercentConfigured.toFixed(0)}% (${grandAllocatedTotal.toFixed(2)} / ${netIncome.toFixed(2)} ${curSign})`;
             
             const pBar = document.getElementById('total-progress-bar');
             
@@ -1449,18 +1418,13 @@
                     totalIrregAllocation += pAlloc;
                     totalIrregSpent += pSpent;
 
-                    let freqLabel = item.freq === 'yearly' ? 'Jährlich' : 'Quartal';
-                    let standingOrderText = item.isStandingOrder ? ' <span style="color:var(--success);">[Dauerauftrag]</span>' : '';
+                    let freqLabel = item.freq === 'yearly' ? '1x Jährlich' : 'Quartal';
+                    let standingOrderText = item.isStandingOrder ? ' <span style="color:var(--success);">[Dauerauftrag active]</span>' : '';
                     
                     detailsHtml += `
-                    <div style="font-size:0.85rem; padding:8px 0; border-bottom:1px dashed var(--border);">
-                        <div style="display:flex; justify-content:space-between; font-weight:600;">
-                            <span>${item.name} ${standingOrderText}</span>
-                            <span>${pAlloc.toFixed(2)} ${curSign} <span style="font-weight:normal; color:var(--text-muted); font-size:0.75rem;">/Monat</span></span>
-                        </div>
-                        <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">
-                            Gespart: ${(pCarry + pAlloc).toFixed(2)} ${curSign} • Ausgaben: <span style="color:var(--danger); font-weight:500;">${pSpent.toFixed(2)} ${curSign}</span>
-                        </div>
+                    <div style="font-size:0.8rem; background:rgba(0,0,0,0.01); padding:6px; border-radius:6px; margin-top:4px; border-left:2px solid var(--warn);">
+                        <strong style="color:var(--text-main);">${item.name}</strong> (${freqLabel}: ${cleanFloat(item.val).toFixed(2)} ${curSign})${standingOrderText}<br>
+                        Monats-Anteil: +${pAlloc.toFixed(2)} ${curSign} | Bisher gespart: ${(pCarry + pAlloc).toFixed(2)} ${curSign} | Ausgaben: <span style="color:var(--danger);">${pSpent.toFixed(2)} ${curSign}</span>
                     </div>`;
                 });
 
@@ -1468,30 +1432,30 @@
                 let totalIrregRemaining = totalIrregAvailable - totalIrregSpent;
 
                 html += `
-                <div class="card" style="background: rgba(255, 149, 0, 0.04);">
-                    <div class="card-title-sub" style="color:var(--warn);">💰 Unregelmäßige Rücklagen</div>
+                <div class="card" style="border-top:4px double var(--warn); background: rgba(255, 149, 0, 0.05);">
+                    <h4 style="font-weight:700; color:var(--warn); margin-bottom:6px;">💰 Gesamte Rücklagen für unregelmäßige Fixkosten</h4>
                     
-                    <div style="font-size:0.9rem; display:flex; flex-direction:column; gap:6px; margin-bottom:12px;">
-                        <div style="display:flex; justify-content:space-between;"><span class="lbl">Vormonat-Übertrag</span><span class="val">${totalIrregPrevCarry.toFixed(2)} ${curSign}</span></div>
-                        <div style="display:flex; justify-content:space-between;"><span class="lbl">Aktuelle Zuweisung</span><span class="val" style="color:var(--success);">+${totalIrregAllocation.toFixed(2)} ${curSign}</span></div>
-                        <div style="display:flex; justify-content:space-between; border-top:1px solid var(--border); padding-top:6px; font-weight:600;"><span style="color:var(--text-main);">Verfügbar Gesamt</span><span>${totalIrregAvailable.toFixed(2)} ${curSign}</span></div>
-                        <div style="display:flex; justify-content:space-between;"><span class="lbl">Monats-Ausgaben</span><span class="val" style="color:var(--danger);">${totalIrregSpent.toFixed(2)} ${curSign}</span></div>
+                    <div style="font-size:0.85rem; color:var(--text-muted); margin-bottom:8px;">
+                        <div><span>Übertrag aus Vormonaten</span>: <span style="float:right; font-weight:600; color:var(--text-main);">${totalIrregPrevCarry.toFixed(2)} ${curSign}</span></div>
+                        <div><span>Zuweisung diesen Monat</span>: <span style="float:right; font-weight:600; color:var(--success); font-size:1rem;">+${totalIrregAllocation.toFixed(2)} ${curSign}</span></div>
+                        <div style="border-top:1px dashed var(--border); margin:3px 0;"></div>
+                        <div style="font-weight:700; color:var(--text-main);"><span>Verfügbar auf Sparbuch</span>: <span style="float:right;">${totalIrregAvailable.toFixed(2)} ${curSign}</span></div>
+                        <div><span>Ausgleiche diesen Monat</span>: <span style="float:right; color:var(--danger);">${totalIrregSpent.toFixed(2)} ${curSign}</span></div>
                     </div>
 
-                    <div style="margin-bottom:14px;">
+                    <div style="margin:8px 0; border-top:1px solid var(--border); padding-top:6px;">
+                        <span style="font-size:0.85rem; font-weight:600; color:var(--text-main);">Enthaltene Einzel-Posten:</span>
                         ${detailsHtml}
                     </div>
 
-                    <div style="background:var(--bg-main); padding:10px; border-radius:10px; margin-bottom:12px;">
-                        <span style="font-size:0.8rem; font-weight:600; color:var(--text-muted); text-transform:uppercase; display:block; margin-bottom:6px;">Ausgabe auf Rücklage buchen</span>
-                        <div style="display:flex; gap:8px;">
-                            <select id="select-irreg-target" style="flex:1; background:var(--bg-card); padding:6px; border-radius:8px; font-size:0.85rem;">
-                                ${irregularList.map(pack => `<option value="${pack.type}|||${pack.item.id}">${pack.item.name}</option>`).join('')}
-                            </select>
-                            <button class="btn-action" style="margin-top:0; padding:6px 12px; font-size:0.85rem; width:auto; border-radius:8px;"
-                                onclick="let val=document.getElementById('select-irreg-target').value.split('|||'); addExpenseToPot(val[0], val[1]);">
-                                + Posten
-                            </button>
+                    <div style="margin-top:10px; background:rgba(0,0,0,0.02); padding:8px; border-radius:8px;">
+                        <span style="font-size:0.8rem; font-weight:600;">Manuelle Ausgabe aus Rücklagen buchen:</span>
+                        <select id="select-irreg-target" style="width:100%; background:var(--bg-main); padding:4px; margin-top:4px; border-radius:6px; border:1px solid var(--border);">
+                            ${irregularList.map(pack => `<option value="${pack.type}|||${pack.item.id}">${pack.item.name} ${pack.item.isStandingOrder ? '(Dauerauftrag)' : ''}</option>`).join('')}
+                        </select>
+                        <div class="btn-action" style="padding:4px; margin-top:6px; font-size:0.8rem; border-radius:6px; background:var(--warn); color:white;"
+                            onclick="let val=document.getElementById('select-irreg-target').value.split('|||'); addExpenseToPot(val[0], val[1]);">
+                            + Ausgabe auf Sparbuch-Posten buchen
                         </div>
                     </div>
 
@@ -1500,35 +1464,32 @@
                         if (pack.item.isStandingOrder) {
                             let pAlloc = getMonthlyProportionalValue(pack.item.val, pack.item.freq);
                             innerHtml += `
-                            <div class="expense-log-row" style="background: rgba(52, 199, 89, 0.06); font-size:0.85rem;">
-                                🔄 <strong>Dauerauftrag:</strong> Auto-Ausgleich von ${pAlloc.toFixed(2)} ${curSign} (${pack.item.name})
+                            <div style="margin-top: 6px; padding: 6px; background: rgba(52, 199, 89, 0.08); border-radius:8px; font-size:0.85rem; border-left:4px solid var(--success);">
+                                🔄 <strong>Dauerauftrag:</strong> Automatisch ausgeglichen mit <span style="font-weight:bold;">${pAlloc.toFixed(2)} ${curSign}</span> (${pack.item.name})
                             </div>`;
                         }
                         (pack.item.expenses || []).forEach(exp => {
                             innerHtml += `
-                            <div class="expense-log-row">
-                                <div style="flex:1;">
-                                    <div style="font-size:0.7rem; color:var(--text-muted); margin-bottom:2px;">Zuordnung: ${pack.item.name}</div>
-                                    <div style="display:flex; align-items:center; gap:6px;">
-                                        <input type="text" placeholder="Zweck..." value="${exp.note || ''}" style="width:50%; font-size:0.85rem; background:var(--bg-card); padding:4px 6px; border-radius:6px;"
-                                            onchange="updateExpenseNote('${pack.type}', '${pack.item.id}', '${exp.id}', this.value)">
-                                        <input type="text" inputmode="decimal" pattern="[0-9.,]*" placeholder="0.00" value="${exp.amount}" style="width:30%; font-size:0.85rem; font-weight:bold; text-align:right;"
-                                            oninput="updateExpenseAmount('${pack.type}', '${pack.item.id}', '${exp.id}', this.value)"
-                                            onchange="triggerExpensePipelineRefresh()"> <span>${curSign}</span>
-                                    </div>
+                            <div style="margin-top: 6px; padding: 4px; background: var(--bg-main); border-radius:8px; border-left: 4px solid ${exp.color || 'var(--border)'};">
+                                <div style="font-size:0.75rem; color:var(--text-muted); margin-bottom:2px;">Zugeordnet zu: ${pack.item.name}</div>
+                                <input type="text" placeholder="Notiz/Zweck..." value="${exp.note || ''}" style="width:40%; font-size:0.85rem; text-align:left; background:rgba(0,0,0,0.02); padding:2px 4px; border-radius:4px;"
+                                    onchange="updateExpenseNote('${pack.type}', '${pack.item.id}', '${exp.id}', this.value)">
+                                <input type="text" inputmode="decimal" pattern="[0-9.,]*" placeholder="0.00" value="${exp.amount}" style="width:25%; font-size:0.85rem; font-weight:bold; text-align:right;"
+                                    oninput="updateExpenseAmount('${pack.type}', '${pack.item.id}', '${exp.id}', this.value)"
+                                    onchange="triggerExpensePipelineRefresh()"> ${curSign}
+                                <div style="float:right; margin-top:4px;">
+                                    <span class="tag-marker" style="background:#ff3b30;" onclick="setExpenseColor('${pack.type}', '${pack.item.id}', '${exp.id}', '#ff3b30')"></span>
+                                    <span class="tag-marker" style="background:#34c759;" onclick="setExpenseColor('${pack.type}', '${pack.item.id}', '${exp.id}', '#34c759')"></span>
+                                    <span style="color:var(--danger); margin-left:8px; font-weight:bold; cursor:pointer;" onclick="removeExpenseFromPot('${pack.type}', '${pack.item.id}', '${exp.id}')">✕</span>
                                 </div>
-                                <div style="display:flex; align-items:center; gap:4px;">
-                                    <span class="tag-marker" style="background:#ff3b30; width:16px; height:16px;" onclick="setExpenseColor('${pack.type}', '${pack.item.id}', '${exp.id}', '#ff3b30')"></span>
-                                    <span class="tag-marker" style="background:#34c759; width:16px; height:16px;" onclick="setExpenseColor('${pack.type}', '${pack.item.id}', '${exp.id}', '#34c759')"></span>
-                                    <span style="color:var(--danger); font-size:1.1rem; margin-left:4px; cursor:pointer;" onclick="removeExpenseFromPot('${pack.type}', '${pack.item.id}', '${exp.id}')">✕</span>
-                                </div>
+                                <div style="clear:both;"></div>
                             </div>`;
                         });
                         return innerHtml;
                     }).join('')}
 
-                    <div style="margin-top:12px; text-align:right; font-weight:700; font-size:1rem; color: ${totalIrregRemaining >= 0 ? 'var(--success)' : 'var(--danger)'};">
-                        Sparbuch-Rest: ${totalIrregRemaining.toFixed(2)} ${curSign}
+                    <div style="margin-top:10px; text-align:right; font-weight:bold; font-size:0.95rem; color: ${totalIrregRemaining >= 0 ? 'var(--success)' : 'var(--danger)'};">
+                        Aktueller Sparbuch-Rest: ${totalIrregRemaining.toFixed(2)} ${curSign}
                     </div>
                 </div>`;
             }
@@ -1552,49 +1513,51 @@
                 
                 if (item.isStandingOrder) {
                     expensesRowsHtml = `
-                    <div class="expense-log-row" style="background: rgba(52, 199, 89, 0.06); font-size:0.85rem; padding:10px;">
-                        🔄 <strong>Dauerauftrag aktiv:</strong> Soll-Betrag von ${currentAllocation.toFixed(2)} ${curSign} automatisch ausgeglichen.
+                    <div style="margin-top: 8px; padding: 8px; background: rgba(52, 199, 89, 0.08); border-radius:10px; font-size:0.9rem; border-left:4px solid var(--success);">
+                        🔄 <strong>Dauerauftrag aktiv:</strong> Der Soll-Betrag von <span style="font-weight:bold;">${currentAllocation.toFixed(2)} ${curSign}</span> wurde für diesen Monat automatisch voll ausgeglichen.
                     </div>`;
                 } else {
                     (item.expenses || []).forEach(exp => {
                         expensesRowsHtml += `
-                        <div class="expense-log-row" style="border-left: 3px solid ${exp.color || 'var(--border)'}; padding-left:8px;">
-                            <input type="text" placeholder="Zweck (z.B. REWE)..." value="${exp.note || ''}" style="width:45%; font-size:0.85rem; background:var(--bg-card); padding:4px 6px; border-radius:6px;"
+                        <div style="margin-top: 6px; padding: 4px; background: rgba(0,0,0,0.02); border-radius:8px; border-left: 4px solid ${exp.color || 'var(--border)'};">
+                            <input type="text" placeholder="Notiz (z.B. REWE)..." value="${exp.note || ''}" style="width:40%; font-size:0.85rem; text-align:left; background:rgba(0,0,0,0.02); padding:2px 4px; border-radius:4px;"
                                 onchange="updateExpenseNote('${type}', '${item.id}', '${exp.id}', this.value)">
                             <input type="text" inputmode="decimal" pattern="[0-9.,]*" placeholder="0.00" value="${exp.amount}" style="width:25%; font-size:0.85rem; font-weight:bold; text-align:right;"
                                 oninput="updateExpenseAmount('${type}', '${item.id}', '${exp.id}', this.value)"
-                                onchange="triggerExpensePipelineRefresh()"> <span style="font-size:0.85rem;">${curSign}</span>
-                            <div style="display:flex; align-items:center; gap:4px; margin-left:auto;">
-                                <span class="tag-marker" style="background:#ff3b30; width:14px; height:14px;" onclick="setExpenseColor('${type}', '${item.id}', '${exp.id}', '#ff3b30')"></span>
-                                <span class="tag-marker" style="background:#ff9500; width:14px; height:14px;" onclick="setExpenseColor('${type}', '${item.id}', '${exp.id}', '#ff9500')"></span>
-                                <span class="tag-marker" style="background:#34c759; width:14px; height:14px;" onclick="setExpenseColor('${type}', '${item.id}', '${exp.id}', '#34c759')"></span>
-                                <span class="tag-marker" style="background:#007aff; width:14px; height:14px;" onclick="setExpenseColor('${type}', '${item.id}', '${exp.id}', '#007aff')"></span>
-                                <span style="color:var(--danger); font-weight:bold; cursor:pointer; margin-left:4px; font-size:1rem;" onclick="removeExpenseFromPot('${type}', '${item.id}', '${exp.id}')">✕</span>
+                                onchange="triggerExpensePipelineRefresh()"> ${curSign}
+                            <div style="float:right; margin-top:4px;">
+                                <span class="tag-marker" style="background:#ff3b30;" onclick="setExpenseColor('${type}', '${item.id}', '${exp.id}', '#ff3b30')"></span>
+                                <span class="tag-marker" style="background:#ff9500;" onclick="setExpenseColor('${type}', '${item.id}', '${exp.id}', '#ff9500')"></span>
+                                <span class="tag-marker" style="background:#34c759;" onclick="setExpenseColor('${type}', '${item.id}', '${exp.id}', '#34c759')"></span>
+                                <span class="tag-marker" style="background:#007aff;" onclick="setExpenseColor('${type}', '${item.id}', '${exp.id}', '#007aff')"></span>
+                                <span style="color:var(--danger); margin-left:8px; font-weight:bold; cursor:pointer;" onclick="removeExpenseFromPot('${type}', '${item.id}', '${exp.id}')">✕</span>
                             </div>
+                            <div style="clear:both;"></div>
                         </div>`;
                     });
                 }
 
                 html += `
-                <div class="card">
-                    <div class="card-title-sub" style="color:var(--accent);">${item.name || 'Unbenannt'}</div>
-                    <div style="font-size:0.9rem; display:flex; flex-direction:column; gap:5px; margin-bottom:10px;">
-                        <div style="display:flex; justify-content:space-between;"><span class="lbl">${i18nDict[lang].pot_prev}</span><span class="val">${prevCarry.toFixed(2)} ${curSign}</span></div>
-                        <div style="display:flex; justify-content:space-between;"><span class="lbl">${i18nDict[lang].pot_curr}</span><span class="val">+${currentAllocation.toFixed(2)} ${curSign}</span></div>
-                        <div style="display:flex; justify-content:space-between; border-top:1px dashed var(--border); padding-top:4px; font-weight:600;"><span style="color:var(--text-main);">${i18nDict[lang].pot_avail}</span><span>${totalAvailable.toFixed(2)} ${curSign}</span></div>
-                        <div style="display:flex; justify-content:space-between;"><span class="lbl">${i18nDict[lang].pot_spent}</span><span class="val" style="color:var(--danger);">${spentSum.toFixed(2)} ${curSign}</span></div>
+                <div class="card" style="border-top:3px solid var(--accent);">
+                    <h4 style="font-weight:700; margin-bottom:6px;">${item.name || 'Unbenannt'}</h4>
+                    <div style="font-size:0.85rem; color:var(--text-muted);">
+                        <div><span>${i18nDict[lang].pot_prev}</span>: <span style="float:right; font-weight:600; color:var(--text-main);">${prevCarry.toFixed(2)} ${curSign}</span></div>
+                        <div><span>${i18nDict[lang].pot_curr}</span>: <span style="float:right; font-weight:600; color:var(--text-main);">${currentAllocation.toFixed(2)} ${curSign}</span></div>
+                        <div style="border-top:1px dashed var(--border); margin:3px 0;"></div>
+                        <div style="font-weight:700; color:var(--text-main);"><span>${i18nDict[lang].pot_avail}</span>: <span style="float:right;">${totalAvailable.toFixed(2)} ${curSign}</span></div>
+                        <div><span>${i18nDict[lang].pot_spent}</span>: <span style="float:right; color:var(--danger);">${spentSum.toFixed(2)} ${curSign}</span></div>
                     </div>
                     
                     ${expensesRowsHtml}
 
                     ${!item.isStandingOrder ? `
-                    <div class="btn-action btn-secondary" style="padding:6px; margin-top:10px; font-size:0.8rem; border-radius:8px;"
+                    <div class="btn-action" style="padding:4px; margin-top:8px; font-size:0.8rem; border-radius:8px; background:var(--border); color:var(--text-main);"
                         onclick="addExpenseToPot('${type}', '${item.id}')">
                         ${i18nDict[lang].add_expense}
                     </div>
                     ` : ''}
 
-                    <div style="margin-top:10px; text-align:right; font-weight:700; font-size:1rem; color: ${remainingNetBalance >= 0 ? 'var(--success)' : 'var(--danger)'};">
+                    <div style="margin-top:8px; text-align:right; font-weight:bold; font-size:0.95rem; color: ${remainingNetBalance >= 0 ? 'var(--success)' : 'var(--danger)'};">
                         Rest: ${remainingNetBalance.toFixed(2)} ${curSign}
                     </div>
                 </div>`;
